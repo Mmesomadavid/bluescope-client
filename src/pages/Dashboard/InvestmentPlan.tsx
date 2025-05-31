@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Check, X } from 'lucide-react';
+import { Check} from 'lucide-react';
 
 const InvestmentPlan: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
@@ -14,19 +14,10 @@ const InvestmentPlan: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Investment Plans</h1>
-        <p className="text-gray-600">Choose the right investment plan for your financial goals.</p>
-      </div>
-
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
         <div className="p-6 border-b">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900">Upgrade Plan</h2>
-            <button className="text-gray-500 hover:text-gray-700">
-              <X className="w-5 h-5" />
-              <span className="sr-only">Close</span>
-            </button>
           </div>
         </div>
 
