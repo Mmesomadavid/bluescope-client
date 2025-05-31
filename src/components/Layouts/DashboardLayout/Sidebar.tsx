@@ -17,16 +17,12 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Plus,
+  ArrowLeftRight,
 } from "lucide-react"
 import Logo from "../../../components/Logo"
 import { ScrollArea } from "../../../components/ui/scroll-area"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "../../../components/ui/dialog"
+import DepositDialog from "../../../components/DepositDailog"
 
 interface SidebarProps {
   sidebarOpen: boolean
@@ -41,47 +37,6 @@ interface MenuItem {
   to?: string
   hasAction?: boolean
   isButton?: boolean
-}
-
-const DepositDialog = () => {
-  return (
-    <div className="p-6">
-      <div className="space-y-4">
-        <div className="text-center">
-          <h3 className="text-lg font-semibold">Quick Deposit</h3>
-          <p className="text-sm text-gray-600 mt-1">Add funds to your account</p>
-        </div>
-        
-        <div className="space-y-3">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Amount
-            </label>
-            <input
-              type="number"
-              placeholder="Enter amount"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Payment Method
-            </label>
-            <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option>Credit/Debit Card</option>
-              <option>Bank Transfer</option>
-              <option>PayPal</option>
-            </select>
-          </div>
-          
-          <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
-            Deposit Now
-          </button>
-        </div>
-      </div>
-    </div>
-  )
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed }) => {
@@ -162,24 +117,40 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
               {menuItems.map((item, index) => (
                 <div key={index} className="relative">
                   {item.isButton ? (
-                    // Button for deposit
-                    <button
-                      onClick={handleDepositClick}
+                  // Button for deposit
+                  <button
+                    onClick={handleDepositClick}
                       className={`w-full flex items-center ${
-                        sidebarCollapsed ? "lg:justify-center lg:px-2" : "space-x-3 px-3"
+                        sidebarCollapsed ? "lg:justify-center lg:px-2" : "px-3"
                       } py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative text-blue-100 hover:bg-blue-500 hover:text-white`}
-                      title={sidebarCollapsed ? item.label : ""}
-                    >
-                      <item.icon className={`flex-shrink-0 ${sidebarCollapsed ? "w-5 h-5" : "w-4 h-4"}`} />
-                      {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
+                    title={sidebarCollapsed ? item.label : ""}
+                  >
+                    <div className="relative flex-shrink-0">
+                        <item.icon className={sidebarCollapsed ? "w-5 h-5" : "w-4 h-4"} />
+                    </div>
+                    {!sidebarCollapsed && (
+                      <span className="truncate ml-3">{item.label}</span>
+                    )}
 
-                      {/* Tooltip for collapsed state */}
-                      {sidebarCollapsed && (
-                        <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 hidden lg:block pointer-events-none">
-                          {item.label}
-                        </div>
-                      )}
-                    </button>
+                    {/* Plus icon at the extreme right */}
+                    {!sidebarCollapsed && (
+                        <span className="ml-auto flex bg-white p-1 items-center rounded-full">
+                          <ArrowLeftRight className="w-4 h-4 text-black" />
+                        </span>
+                    )}
+
+                    {/* Plus icon for collapsed state (on icon) */}
+                    {sidebarCollapsed && (
+                      <Plus className="absolute -top-1 -right-1 w-3 h-3 text-blue-100 bg-blue-600 rounded-full p-0.5" />
+                    )}
+
+                    {/* Tooltip for collapsed state */}
+                    {sidebarCollapsed && (
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 hidden lg:block pointer-events-none">
+                        {item.label}
+                      </div>
+                    )}
+                  </button>
                   ) : (
                     // NavLink for other items
                     <NavLink
@@ -232,24 +203,11 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
           )}
         </ScrollArea>
 
-        {/* Deposit Dialog */}
-        <Dialog open={isDepositDialogOpen} onOpenChange={setIsDepositDialogOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Quick Deposit</DialogTitle>
-              <DialogDescription>
-                Add funds to your account instantly
-              </DialogDescription>
-            </DialogHeader>
-            <DepositDialog />
-          </DialogContent>
-        </Dialog>
-
         {/* Desktop collapse toggle button - positioned on the border */}
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
           className={`
-            hidden lg:flex absolute -right-3 top-20 z-40 
+            hidden lg:flex absolute -right-3 top-60 z-40 
             w-6 h-6 bg-white border border-gray-200 rounded-full shadow-md 
             hover:bg-gray-50 text-gray-600 hover:text-gray-900 
             transition-all duration-200 items-center justify-center
@@ -260,6 +218,9 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
           {sidebarCollapsed ? <ChevronRight className="w-3 h-3" /> : <ChevronLeft className="w-3 h-3" />}
         </button>
       </aside>
+
+      {/* Pass the dialog state to DepositDialog component */}
+      <DepositDialog isOpen={isDepositDialogOpen} onOpenChange={setIsDepositDialogOpen} />
     </>
   )
 }
