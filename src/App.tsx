@@ -21,8 +21,8 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import DashSettings from './pages/Dashboard/DashSettings';
 
 // Layout Components
-import AdminLayout from './components/Layouts/AdminLayout';
-import DashboardLayout from './components/Layouts/DashboardLayout';
+import AdminLayout from './components/Layouts/AdminLayout/AdminLayout';
+import DashboardLayout from './components/Layouts/DashboardLayout/DashboardLayout';
 
 interface LayoutProps {
   children: React.ReactNode;
