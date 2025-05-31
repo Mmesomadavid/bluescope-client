@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { useState } from "react"
 import { NavLink } from "react-router-dom"
 import {
   LayoutDashboard,
@@ -19,6 +20,13 @@ import {
 } from "lucide-react"
 import Logo from "../../../components/Logo"
 import { ScrollArea } from "../../../components/ui/scroll-area"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../../../components/ui/dialog"
 
 interface SidebarProps {
   sidebarOpen: boolean
@@ -30,16 +38,61 @@ interface SidebarProps {
 interface MenuItem {
   icon: React.ComponentType<{ className?: string }>
   label: string
-  to: string
+  to?: string
+  hasAction?: boolean
+  isButton?: boolean
+}
+
+const DepositDialog = () => {
+  return (
+    <div className="p-6">
+      <div className="space-y-4">
+        <div className="text-center">
+          <h3 className="text-lg font-semibold">Quick Deposit</h3>
+          <p className="text-sm text-gray-600 mt-1">Add funds to your account</p>
+        </div>
+        
+        <div className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Amount
+            </label>
+            <input
+              type="number"
+              placeholder="Enter amount"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Payment Method
+            </label>
+            <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option>Credit/Debit Card</option>
+              <option>Bank Transfer</option>
+              <option>PayPal</option>
+            </select>
+          </div>
+          
+          <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
+            Deposit Now
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed }) => {
+  const [isDepositDialogOpen, setIsDepositDialogOpen] = useState(false)
+
   const menuItems: MenuItem[] = [
     { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
     { icon: Target, label: "Investment Plan", to: "/dashboard/investment-plan" },
     { icon: Logs, label: "Investment Log", to: "/dashboard/investment-log" },
     { icon: ListCheck, label: "All Transactions", to: "/dashboard/all-transactions" },
-    { icon: PiggyBank, label: "Deposit", to: "/dashboard/deposit" },
+    { icon: PiggyBank, label: "Deposit", isButton: true },
     { icon: Logs, label: "Deposit Log", to: "/dashboard/deposit-log" },
     { icon: CreditCard, label: "Withdraw", to: "/dashboard/withdraw" },
     { icon: BookCheck, label: "Withdraw Logs", to: "/dashboard/withdraw-logs" },
@@ -49,6 +102,11 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
 
   const handleNavClick = () => {
     setSidebarOpen(false)
+  }
+
+  const handleDepositClick = () => {
+    setIsDepositDialogOpen(true)
+    setSidebarOpen(false) // Close mobile sidebar when deposit is clicked
   }
 
   return (
@@ -102,32 +160,55 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
             )}
             <nav className="space-y-1">
               {menuItems.map((item, index) => (
-                <NavLink
-                  key={index}
-                  to={item.to}
-                  end={item.to === "/dashboard"}
-                  onClick={handleNavClick}
-                  className={({ isActive }) =>
-                    `flex items-center ${
-                      sidebarCollapsed ? "lg:justify-center lg:px-2" : "space-x-3 px-3"
-                    } py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative ${
-                      isActive
-                        ? "bg-blue-100 text-blue-700 shadow-sm"
-                        : "text-blue-100 hover:bg-blue-500 hover:text-white"
-                    }`
-                  }
-                  title={sidebarCollapsed ? item.label : ""}
-                >
-                  <item.icon className={`flex-shrink-0 ${sidebarCollapsed ? "w-5 h-5" : "w-4 h-4"}`} />
-                  {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
+                <div key={index} className="relative">
+                  {item.isButton ? (
+                    // Button for deposit
+                    <button
+                      onClick={handleDepositClick}
+                      className={`w-full flex items-center ${
+                        sidebarCollapsed ? "lg:justify-center lg:px-2" : "space-x-3 px-3"
+                      } py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative text-blue-100 hover:bg-blue-500 hover:text-white`}
+                      title={sidebarCollapsed ? item.label : ""}
+                    >
+                      <item.icon className={`flex-shrink-0 ${sidebarCollapsed ? "w-5 h-5" : "w-4 h-4"}`} />
+                      {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
 
-                  {/* Tooltip for collapsed state */}
-                  {sidebarCollapsed && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 hidden lg:block pointer-events-none">
-                      {item.label}
-                    </div>
+                      {/* Tooltip for collapsed state */}
+                      {sidebarCollapsed && (
+                        <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 hidden lg:block pointer-events-none">
+                          {item.label}
+                        </div>
+                      )}
+                    </button>
+                  ) : (
+                    // NavLink for other items
+                    <NavLink
+                      to={item.to!}
+                      end={item.to === "/dashboard"}
+                      onClick={handleNavClick}
+                      className={({ isActive }) =>
+                        `flex items-center ${
+                          sidebarCollapsed ? "lg:justify-center lg:px-2" : "space-x-3 px-3"
+                        } py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative ${
+                          isActive
+                            ? "bg-blue-100 text-blue-700 shadow-sm"
+                            : "text-blue-100 hover:bg-blue-500 hover:text-white"
+                        }`
+                      }
+                      title={sidebarCollapsed ? item.label : ""}
+                    >
+                      <item.icon className={`flex-shrink-0 ${sidebarCollapsed ? "w-5 h-5" : "w-4 h-4"}`} />
+                      {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
+
+                      {/* Tooltip for collapsed state */}
+                      {sidebarCollapsed && (
+                        <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 hidden lg:block pointer-events-none">
+                          {item.label}
+                        </div>
+                      )}
+                    </NavLink>
                   )}
-                </NavLink>
+                </div>
               ))}
             </nav>
           </div>
@@ -150,6 +231,19 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
             </div>
           )}
         </ScrollArea>
+
+        {/* Deposit Dialog */}
+        <Dialog open={isDepositDialogOpen} onOpenChange={setIsDepositDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Quick Deposit</DialogTitle>
+              <DialogDescription>
+                Add funds to your account instantly
+              </DialogDescription>
+            </DialogHeader>
+            <DepositDialog />
+          </DialogContent>
+        </Dialog>
 
         {/* Desktop collapse toggle button - positioned on the border */}
         <button
