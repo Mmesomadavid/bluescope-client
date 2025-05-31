@@ -23,6 +23,13 @@ import DashSettings from './pages/Dashboard/DashSettings';
 // Layout Components
 import AdminLayout from './components/Layouts/AdminLayout/AdminLayout';
 import DashboardLayout from './components/Layouts/DashboardLayout/DashboardLayout';
+import InvestmentPlan from './pages/Dashboard/InvestmentPlan';
+import InvestmentLog from './pages/Dashboard/InvestmentLog';
+import AllTransactions from './pages/Dashboard/AllTransactions';
+import Deposit from './pages/Dashboard/Deposit';
+import DepositLog from './pages/Dashboard/DepositLog';
+import Withdraw from './pages/Dashboard/Withdraw';
+import WithdrawLogs from './pages/Dashboard/WithdrawLogs';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -53,8 +60,15 @@ function App() {
         {/* User Dashboard (no Navbar/Footer) */}
         <Route path="/dashboard/*" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
+          <Route path="investment-plan" element={<InvestmentPlan/>} />
+          <Route path="investment-log" element={<InvestmentLog/>} />
+          <Route path="all-transactions" element={<AllTransactions/>} />
+          <Route path="deposit" element={<Deposit/>} />
+          <Route path="deposit-log" element={<DepositLog/>} />
+          <Route path="withdraw" element={<Withdraw/>} />
+          <Route path="withdraw-logs" element={<WithdrawLogs/>} />
           <Route path="settings" element={<DashSettings />} />
-          {/* more user-dashboard routes */}
+          <Route path="profile" element={<div>Profile</div>} />
         </Route>
 
         {/* Admin Dashboard (no Navbar/Footer) */}
