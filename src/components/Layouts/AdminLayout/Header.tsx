@@ -1,12 +1,14 @@
 "use client"
 import { Search, Bell } from "lucide-react"
-
+import { useSidebar } from "../../../components/ui/sidebar"
 import { Button } from "../../../components/ui/button"
 import { Input } from "../../../components/ui/input"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
 
 const Header = () => {
+  const { toggleSidebar } = useSidebar()
+
   return (
     <header className="flex h-16 items-center justify-between bg-gray-50 px-4 md:px-6">
       {/* Left section - Search Input or Menu */}
@@ -22,6 +24,7 @@ const Header = () => {
           size="icon"
           className="md:hidden"
           aria-label="Open menu"
+          onClick={toggleSidebar}
         >
           <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
