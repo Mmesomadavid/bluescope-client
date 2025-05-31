@@ -22,8 +22,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../components/ui/dropdown-menu"
 import { Separator } from "../../components/ui/separator"
 
-interface Mission {
+interface Transaction {
   id: string
+  amount: number
+  currency: string
+  description: string
   title: string
   role: string
   date: string
@@ -48,31 +51,41 @@ const Profile: React.FC = () => {
     { label: "Location", value: "Delta", icon: LocationEdit },
   ]
 
-  const missions: Mission[] = [
-    {
-      id: "1",
-      title: "Satellite maintenance",
-      role: "Lead Engineer",
-      date: "19 Sept, 2023",
-      status: "active",
-    },
-    {
-      id: "2",
-      title: "Orbital deployment",
-      role: "Systems Analyst",
-      date: "15 Sept, 2023",
-      status: "completed",
-    },
-    {
-      id: "3",
-      title: "Communication array setup",
-      role: "Technical Lead",
-      date: "12 Sept, 2023",
-      status: "pending",
-    },
-  ]
+  const transactions: Transaction[] = [
+  {
+    id: "txn_1001",
+    amount: 1250.0,
+    currency: "USD",
+    date: "2023-09-19",
+    description: "Monthly subscription payment",
+    status: "completed",
+    title: "BTC INVESTMNET",
+    role: "User",
+  },
+  {
+    id: "txn_1002",
+    amount: 430.75,
+    currency: "USD",
+    date: "2023-09-15",
+    description: "One-time consulting fee",
+    status: "completed",
+    title: "CASH INVESTMENT",
+    role: "Consultant",
+  },
+  {
+    id: "txn_1003",
+    amount: 89.99,
+    currency: "USD",
+    date: "2023-09-12",
+    description: "Equipment rental deposit",
+    status: "pending",
+    title: "cAPITAL INVESTMENT",
+    role: "User",
+  },
+];
 
-  const getStatusBadge = (status: Mission["status"]) => {
+
+  const getStatusBadge = (status: Transaction["status"]) => {
     switch (status) {
       case "active":
         return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Active</Badge>
@@ -172,11 +185,11 @@ const Profile: React.FC = () => {
 
             {isAssignedExpanded && (
               <div className="mt-4 space-y-3">
-                {missions
-                  .filter((mission) => mission.status === "active")
-                  .map((mission) => (
+                {transactions
+                  .filter((transaction) => transaction.status === "active")
+                  .map((transaction) => (
                     <div
-                      key={mission.id}
+                      key={transaction.id}
                       className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                     >
                       <div className="flex items-center space-x-3">
@@ -184,12 +197,12 @@ const Profile: React.FC = () => {
                           <Satellite className="w-4 h-4 text-blue-600" />
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-900">{mission.title}</h4>
-                          <p className="text-sm text-gray-600">{mission.role}</p>
+                          <h4 className="font-medium text-gray-900">{transaction.title}</h4>
+                          <p className="text-sm text-gray-600">{transaction.role}</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-3">
-                        <span className="text-sm text-gray-500">{mission.date}</span>
+                        <span className="text-sm text-gray-500">{transaction.date}</span>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -198,7 +211,7 @@ const Profile: React.FC = () => {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem>View Details</DropdownMenuItem>
-                            <DropdownMenuItem>Edit Mission</DropdownMenuItem>
+                            <DropdownMenuItem>Edit transaction</DropdownMenuItem>
                             <DropdownMenuItem className="text-red-600">Remove Assignment</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -211,21 +224,21 @@ const Profile: React.FC = () => {
 
           <Separator />
 
-          {/* Add New Mission Button */}
+          {/* Add New transaction Button */}
           <Button
             variant="outline"
             className="w-full justify-start text-orange-600 border-orange-200 hover:bg-orange-50"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Assign a new mission
+            Assign a new transaction
           </Button>
 
-          {/* All Missions */}
+          {/* All transactions */}
           <div className="space-y-3">
-            <h4 className="text-sm font-medium text-gray-700 uppercase tracking-wider">ALL MISSIONS</h4>
-            {missions.map((mission) => (
+            <h4 className="text-sm font-medium text-gray-700 uppercase tracking-wider">ALL transactionS</h4>
+            {transactions.map((transaction) => (
               <div
-                key={mission.id}
+                key={transaction.id}
                 className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center space-x-3">
@@ -233,13 +246,13 @@ const Profile: React.FC = () => {
                     <Satellite className="w-4 h-4 text-gray-600" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">{mission.title}</h4>
-                    <p className="text-sm text-gray-600">{mission.role}</p>
+                    <h4 className="font-medium text-gray-900">{transaction.title}</h4>
+                    <p className="text-sm text-gray-600">{transaction.role}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  {getStatusBadge(mission.status)}
-                  <span className="text-sm text-gray-500">{mission.date}</span>
+                  {getStatusBadge(transaction.status)}
+                  <span className="text-sm text-gray-500">{transaction.date}</span>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
@@ -248,7 +261,7 @@ const Profile: React.FC = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem>View Details</DropdownMenuItem>
-                      <DropdownMenuItem>Edit Mission</DropdownMenuItem>
+                      <DropdownMenuItem>Edit transaction</DropdownMenuItem>
                       <DropdownMenuItem className="text-red-600">Remove Assignment</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
