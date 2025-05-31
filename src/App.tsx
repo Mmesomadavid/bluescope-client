@@ -30,6 +30,7 @@ import DepositLog from './pages/Dashboard/DepositLog';
 import Withdraw from './pages/Dashboard/Withdraw';
 import WithdrawLogs from './pages/Dashboard/WithdrawLogs';
 import Profile from './pages/Dashboard/Profile';
+import InvestmentReport from './pages/AdminDash/InvestmentReport';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -73,6 +74,7 @@ function App() {
         {/* Admin Dashboard (no Navbar/Footer) */}
         <Route path="/admin-dashboard/*" element={<AdminLayout />}>
           <Route index element={<AdminDash />} />
+          <Route path="investment-report" element={<InvestmentReport />} />
           <Route path="settings" element={<AdminSettings />} />
           {/* more admin-dashboard routes */}
         </Route>
