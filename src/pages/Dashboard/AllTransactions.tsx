@@ -198,16 +198,6 @@ const AllTransactions: React.FC = () => {
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <CardTitle>Transactions</CardTitle>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Button variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Export All Data
-              </Button>
-              <Button size="sm">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Transaction
-              </Button>
-            </div>
           </div>
         </CardHeader>
         <CardContent>
