@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Search, Download, Plus, MoreHorizontal, Eye, Edit, Trash2, Filter } from "lucide-react"
+import { Search,  MoreHorizontal, Eye, Edit, Trash2, Filter } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
