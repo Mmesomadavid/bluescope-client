@@ -5,7 +5,6 @@ import { useState } from "react"
 import { NavLink } from "react-router-dom"
 import {
   LayoutDashboard,
-  Settings,
   Moon,
   User,
   BookCheck,
@@ -51,7 +50,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
     { icon: Logs, label: "Deposit Log", to: "/dashboard/deposit-log" },
     { icon: CreditCard, label: "Withdraw", to: "/dashboard/withdraw" },
     { icon: BookCheck, label: "Withdraw Logs", to: "/dashboard/withdraw-logs" },
-    { icon: Settings, label: "Settings", to: "/dashboard/settings" },
     { icon: User, label: "Profile", to: "/dashboard/profile" },
   ]
 

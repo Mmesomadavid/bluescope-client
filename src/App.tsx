@@ -18,7 +18,6 @@ import Events from './pages/Events';
 import AdminDash from './pages/AdminDash/AdminDash';
 import AdminSettings from './pages/AdminDash/AdminSettings';
 import Dashboard from './pages/Dashboard/Dashboard';
-import DashSettings from './pages/Dashboard/DashSettings';
 
 // Layout Components
 import AdminLayout from './components/Layouts/AdminLayout/AdminLayout';
@@ -30,6 +29,7 @@ import Deposit from './pages/Dashboard/Deposit';
 import DepositLog from './pages/Dashboard/DepositLog';
 import Withdraw from './pages/Dashboard/Withdraw';
 import WithdrawLogs from './pages/Dashboard/WithdrawLogs';
+import Profile from './pages/Dashboard/Profile';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -67,8 +67,7 @@ function App() {
           <Route path="deposit-log" element={<DepositLog/>} />
           <Route path="withdraw" element={<Withdraw/>} />
           <Route path="withdraw-logs" element={<WithdrawLogs/>} />
-          <Route path="settings" element={<DashSettings />} />
-          <Route path="profile" element={<div>Profile</div>} />
+          <Route path="profile" element={<Profile/>} />
         </Route>
 
         {/* Admin Dashboard (no Navbar/Footer) */}
