@@ -1,18 +1,25 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Header from './Header';
-import Sidebar from './Sidebar';
+"use client"
 
-const AdminLayout: React.FC = () => (
-  <div className="admin-layout">
-    <Header />
-    <div className="admin-layout-content">
-      <Sidebar />
-      <main className="admin-main-content">
-        <Outlet />
-      </main>
-    </div>
-  </div>
-);
+import { Outlet } from "react-router-dom"
 
-export default AdminLayout;
+import { SidebarProvider, SidebarInset } from "../../ui/sidebar"
+import Header from "./Header"
+import Sidebar from "./Sidebar"
+
+const AdminLayout = () => {
+  return (
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <Sidebar />
+        <SidebarInset className="flex-1">
+          <Header />
+          <main className="flex-1 p-6">
+            <Outlet />
+          </main>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
+  )
+}
+
+export default AdminLayout
