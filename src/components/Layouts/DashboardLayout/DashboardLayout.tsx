@@ -1,11 +1,17 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
+import Header from './Header';
+import Sidebar from './Sidebar';
 
 const DashboardLayout: React.FC = () => (
-  <div className="dashboard-layout">
-    {/* ...dashboard sidebar/header/etc... */}
-    <Outlet />
-    <h1>This is the user's dashboard</h1>
+   <div className="dashboard-layout">
+    <Header />
+    <div className="admin-layout-content">
+      <Sidebar />
+      <main className="admin-main-content">
+        <Outlet />
+      </main>
+    </div>
   </div>
 );
 
