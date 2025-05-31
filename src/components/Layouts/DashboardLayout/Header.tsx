@@ -12,7 +12,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
   return (
-    <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-3 flex items-center justify-between lg:justify-end">
+    <header className="bg-gray-50 px-4 md:px-6 py-3 flex items-center justify-between lg:justify-end">
       {/* Mobile menu button */}
       <button
         onClick={() => setSidebarOpen(true)}

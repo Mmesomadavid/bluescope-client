@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react"
 import Logo from "../../../components/Logo"
+import { ScrollArea } from "../../../components/ui/scroll-area"
 
 interface SidebarProps {
   sidebarOpen: boolean
@@ -61,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
       <aside
         className={`
         fixed lg:static inset-y-0 left-0 z-30
-        ${sidebarCollapsed ? "lg:w-16" : "lg:w-64"} 
+        ${sidebarCollapsed ? "lg:w-20" : "lg:w-64"} 
         w-64 bg-blue-600 border-r border-blue-500 h-screen flex flex-col
         transform transition-all duration-300 ease-in-out
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
@@ -80,7 +81,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
             ${sidebarCollapsed ? "lg:justify-center lg:space-x-0" : ""}
           `}
           >
-            <Logo />
+            {!sidebarCollapsed && <Logo />}
           </div>
 
           {/* Mobile close button */}
@@ -94,7 +95,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
         </div>
 
         {/* Menu Section */}
-        <div className="flex-1 p-4 overflow-y-auto">
+        <ScrollArea className="flex-1 p-4">
           <div className="mb-6">
             {!sidebarCollapsed && (
               <h3 className="text-xs font-semibold text-blue-100 uppercase tracking-wider mb-3">MENU</h3>
@@ -148,7 +149,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
               </div>
             </div>
           )}
-        </div>
+        </ScrollArea>
 
         {/* Desktop collapse toggle button - positioned on the border */}
         <button
