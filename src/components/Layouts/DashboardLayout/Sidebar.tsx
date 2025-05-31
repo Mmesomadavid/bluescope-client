@@ -153,7 +153,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
                           {item.label === "Deposit" ? (
                             <Plus className="w-2 h-2 text-blue-100" />
                           ) : (
-                            <ArrowLeftRight className="w-2 h-2 text-blue-100" />
+                            <CreditCard className="w-2 h-2 text-blue-100" />
                           )}
                         </div>
                       )}
