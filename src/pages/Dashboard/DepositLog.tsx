@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Search, Plus, MoreHorizontal, Eye, Edit, Trash2, Filter } from "lucide-react"
+import { Search, Plus, MoreHorizontal, Eye,  Filter } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
@@ -498,14 +498,6 @@ const DepositLog: React.FC = () => {
                       <DropdownMenuItem onClick={() => handleViewDeposit(transaction)}>
                         <Eye className="w-4 h-4 mr-2" />
                         View Details
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
