@@ -109,36 +109,6 @@ const DepositSheet: React.FC<DepositSheetProps> = ({ transaction, isOpen, onClos
     }
   }
 
-  const getTypeBadge = (type: Transaction["type"]) => {
-    switch (type) {
-      case "Deposit":
-        return (
-          <Badge className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-900">
-            Deposit
-          </Badge>
-        )
-      case "Withdrawal":
-        return (
-          <Badge className="bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 hover:bg-orange-100 dark:hover:bg-orange-900">
-            Withdrawal
-          </Badge>
-        )
-      case "Investment":
-        return (
-          <Badge className="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 hover:bg-purple-100 dark:hover:bg-purple-900">
-            Investment
-          </Badge>
-        )
-      case "Return":
-        return (
-          <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-900">
-            Return
-          </Badge>
-        )
-      default:
-        return <Badge variant="secondary">{type}</Badge>
-    }
-  }
 
   const getTypeIcon = (type: Transaction["type"]) => {
     switch (type) {
