@@ -10,11 +10,7 @@ import {
   ArrowDownCircle,
   ArrowDownRight,
   Share2,
-  DollarSign,
-  TrendingUp,
   Users,
-  CreditCard,
-  RotateCcw,
 } from "lucide-react"
 
 const Dashboard = () => {
