@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avat
 import { Popover, PopoverTrigger, PopoverContent } from "../../../components/ui/popover"
 import { Switch } from "../../../components/ui/switch"
 import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 
 interface HeaderProps {
   setSidebarOpen: (open: boolean) => void
@@ -14,51 +15,78 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  // Ensure component is mounted before rendering theme-dependent content
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
 
   return (
-    <header className="bg-gray-50 px-4 md:px-6 py-3 flex items-center justify-between lg:justify-end">
+    <header className="bg-background border-b border-border px-4 md:px-6 py-3 flex items-center justify-between lg:justify-end transition-colors duration-300">
       {/* Mobile menu button */}
       <button
         onClick={() => setSidebarOpen(true)}
-        className="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
+        className="lg:hidden p-2 rounded-md text-foreground hover:text-foreground hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
         aria-label="Open sidebar"
       >
         <Menu className="w-5 h-5" />
       </button>
 
       {/* Page title for mobile */}
-      <h1 className="lg:hidden text-lg font-semibold text-gray-900">Dashboard</h1>
+      <h1 className="lg:hidden text-lg font-semibold text-foreground">Dashboard</h1>
 
       {/* Right side - Theme toggle and Profile with popover */}
       <div className="flex items-center gap-4">
-        {/* Theme switch */}
-        <div className="flex items-center gap-2">
-          <Sun className={`w-5 h-5 ${theme === "light" ? "text-yellow-500" : "text-gray-400"}`} />
-          <Switch
-            checked={theme === "dark"}
-            onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
-            aria-label="Toggle theme"
-          />
-          <Moon className={`w-5 h-5 ${theme === "dark" ? "text-blue-500" : "text-gray-400"}`} />
+        {/* Enhanced Theme Toggle with Animation */}
+        <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/50 transition-all duration-300">
+          <div className="relative">
+            <Sun
+              className={`w-5 h-5 transition-all duration-500 ${
+                theme === "light" ? "text-yellow-500 rotate-0 scale-100" : "text-muted-foreground rotate-180 scale-75"
+              }`}
+            />
+          </div>
+
+          <div className="relative">
+            <Switch
+              checked={theme === "dark"}
+              onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+              aria-label="Toggle theme"
+              className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-input transition-all duration-300"
+            />
+          </div>
+
+          <div className="relative">
+            <Moon
+              className={`w-5 h-5 transition-all duration-500 ${
+                theme === "dark" ? "text-blue-400 rotate-0 scale-100" : "text-muted-foreground -rotate-180 scale-75"
+              }`}
+            />
+          </div>
         </div>
 
         <Popover>
           <PopoverTrigger asChild>
-            <button className="flex items-center space-x-3 focus:outline-none bg-transparent border-0 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+            <button className="flex items-center space-x-3 focus:outline-none bg-transparent border-0 p-2 rounded-lg hover:bg-accent transition-colors">
               <div className="relative">
                 <Avatar className="w-8 h-8">
                   <AvatarImage
                     src="https://ui-avatars.com/api/?name=John+Galt&background=3b82f6&color=fff"
                     alt="User avatar"
                   />
-                  <AvatarFallback className="bg-blue-600 text-white text-sm">JG</AvatarFallback>
+                  <AvatarFallback className="bg-primary text-primary-foreground text-sm">JG</AvatarFallback>
                 </Avatar>
                 {/* Active green dot */}
-                <span className="absolute -bottom-0.5 -right-0.5 block w-3 h-3 rounded-full ring-2 ring-white bg-green-500" />
+                <span className="absolute -bottom-0.5 -right-0.5 block w-3 h-3 rounded-full ring-2 ring-background bg-green-500" />
               </div>
               <div className="hidden md:flex flex-col items-start">
-                <span className="text-sm font-medium text-gray-900">John Galt</span>
-                <span className="text-xs text-gray-500">john.galt@email.com</span>
+                <span className="text-sm font-medium text-foreground">John Galt</span>
+                <span className="text-xs text-muted-foreground">john.galt@email.com</span>
               </div>
             </button>
           </PopoverTrigger>
@@ -71,29 +99,29 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
                     src="https://ui-avatars.com/api/?name=John+Galt&background=3b82f6&color=fff"
                     alt="User avatar"
                   />
-                  <AvatarFallback className="bg-blue-600 text-white">JG</AvatarFallback>
+                  <AvatarFallback className="bg-primary text-primary-foreground">JG</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-gray-900">John Galt</span>
-                  <span className="text-xs text-gray-500">john.galt@email.com</span>
+                  <span className="text-sm font-medium text-foreground">John Galt</span>
+                  <span className="text-xs text-muted-foreground">john.galt@email.com</span>
                 </div>
               </div>
 
               {/* Status indicator */}
-              <div className="flex items-center space-x-2 px-2 py-1 bg-green-50 rounded-md">
+              <div className="flex items-center space-x-2 px-2 py-1 bg-green-50 dark:bg-green-950 rounded-md">
                 <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
-                <span className="text-xs text-green-700 font-medium">Online</span>
+                <span className="text-xs text-green-700 dark:text-green-300 font-medium">Online</span>
               </div>
 
               {/* Menu items */}
-              <div className="border-t pt-3 space-y-1">
-                <button className="w-full text-left px-2 py-1.5 rounded text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+              <div className="border-t border-border pt-3 space-y-1">
+                <button className="w-full text-left px-2 py-1.5 rounded text-sm text-foreground hover:bg-accent transition-colors">
                   My Account
                 </button>
-                <button className="w-full text-left px-2 py-1.5 rounded text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                <button className="w-full text-left px-2 py-1.5 rounded text-sm text-foreground hover:bg-accent transition-colors">
                   Settings
                 </button>
-                <button className="w-full text-left px-2 py-1.5 rounded text-sm text-red-600 hover:bg-red-50 transition-colors">
+                <button className="w-full text-left px-2 py-1.5 rounded text-sm text-destructive hover:bg-destructive/10 transition-colors">
                   Sign Out
                 </button>
               </div>
