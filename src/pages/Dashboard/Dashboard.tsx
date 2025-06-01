@@ -6,8 +6,24 @@ const Dashboard = () => {
     navigator.clipboard.writeText('REF123456');
   };
 
+   // Get current date in a readable format
+  const today = new Date();
+  const dateString = today.toLocaleDateString(undefined, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <div className="space-y-6">
+      {/* Greeting */}
+       <div className="mb-2">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold flex items-center gap-2 text-foreground Poppins">
+           👋 Welcome back John Galt!
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">{dateString}</p>
+        </div>
       {/* Cards Row */}
       <div className="flex flex-col gap-4 pb-2 sm:flex-row sm:overflow-x-auto">
         {/* Balance */}
