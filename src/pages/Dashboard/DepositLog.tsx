@@ -20,6 +20,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../../components/ui/pagination"
+import DepositSheet from "../../components/deposit-sheet"
 
 interface Transaction {
   id: string
@@ -40,6 +41,8 @@ const DepositLog: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [selectedDeposits, setSelectedDeposits] = useState<string[]>([])
+  const [selectedDeposit, setSelectedDeposit] = useState<Transaction | null>(null)
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   // Mock data
   const mockDeposits: Transaction[] = [
@@ -159,6 +162,15 @@ const DepositLog: React.FC = () => {
     }
   }
 
+  const handleViewDeposit = (deposit: Transaction) => {
+    setSelectedDeposit(deposit)
+    setIsSheetOpen(true)
+  }
+
+  const handleRowClick = (deposit: Transaction) => {
+    handleViewDeposit(deposit)
+  }
+
   const getStatusBadge = (status: Transaction["status"]) => {
     switch (status) {
       case "Completed":
@@ -219,7 +231,7 @@ const DepositLog: React.FC = () => {
     <div className="space-y-6 bg-background">
       <div>
         <h1 className="text-2xl font-bold text-foreground">All Deposits</h1>
-        <p className="text-muted-foreground">View and manage all your transaction history.</p>
+        <p className="text-muted-foreground">View and manage all your deposit history.</p>
       </div>
 
       <Card className="bg-card border-border">
@@ -393,7 +405,7 @@ const DepositLog: React.FC = () => {
                       />
                     </TableHead>
                     <TableHead className="text-foreground">Transaction Number</TableHead>
-                    <TableHead className="text-foreground hidden md:table-cell">Date Created</TableHead>
+                    <TableHead className="text-foreground hidden md:table-cell min-w-[180px]">Date Created</TableHead>
                     <TableHead className="text-foreground hidden lg:table-cell">Wallet Type</TableHead>
                     <TableHead className="text-foreground">Type</TableHead>
                     <TableHead className="text-foreground">Amount</TableHead>
@@ -404,8 +416,12 @@ const DepositLog: React.FC = () => {
                 </TableHeader>
                 <TableBody>
                   {paginatedDeposits.map((transaction) => (
-                    <TableRow key={transaction.id} className="border-border hover:bg-muted/50">
-                      <TableCell>
+                    <TableRow
+                      key={transaction.id}
+                      className="border-border hover:bg-muted/50 cursor-pointer"
+                      onClick={() => handleRowClick(transaction)}
+                    >
+                      <TableCell onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={selectedDeposits.includes(transaction.id)}
                           onCheckedChange={(checked) => handleSelectTransaction(transaction.id, checked as boolean)}
@@ -415,7 +431,9 @@ const DepositLog: React.FC = () => {
                         <span className="md:hidden">{transaction.transactionNumber.substring(0, 6)}...</span>
                         <span className="hidden md:inline">{transaction.transactionNumber}</span>
                       </TableCell>
-                      <TableCell className="text-muted-foreground hidden md:table-cell">{transaction.date}</TableCell>
+                      <TableCell className="text-muted-foreground hidden md:table-cell min-w-[180px]">
+                        {transaction.date}
+                      </TableCell>
                       <TableCell className="text-foreground hidden lg:table-cell">{transaction.walletType}</TableCell>
                       <TableCell>{getTypeBadge(transaction.type)}</TableCell>
                       <TableCell className="font-medium text-foreground">${transaction.amount.toFixed(2)}</TableCell>
@@ -425,7 +443,7 @@ const DepositLog: React.FC = () => {
                           {transaction.remark}
                         </span>
                       </TableCell>
-                      <TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -433,7 +451,7 @@ const DepositLog: React.FC = () => {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleViewDeposit(transaction)}>
                               <Eye className="w-4 h-4 mr-2" />
                               View Details
                             </DropdownMenuItem>
@@ -451,12 +469,17 @@ const DepositLog: React.FC = () => {
           <div className="md:hidden mt-4 space-y-4">
             <h3 className="text-sm font-medium text-muted-foreground mb-2">Mobile View</h3>
             {paginatedDeposits.map((transaction) => (
-              <div key={transaction.id} className="border border-border rounded-lg p-4 space-y-3 bg-card">
+              <div
+                key={transaction.id}
+                className="border border-border rounded-lg p-4 space-y-3 bg-card cursor-pointer hover:bg-muted/50 transition-colors"
+                onClick={() => handleRowClick(transaction)}
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Checkbox
                       checked={selectedDeposits.includes(transaction.id)}
                       onCheckedChange={(checked) => handleSelectTransaction(transaction.id, checked as boolean)}
+                      onClick={(e) => e.stopPropagation()}
                     />
                     <span
                       className="font-medium text-foreground truncate max-w-[180px]"
@@ -466,13 +489,13 @@ const DepositLog: React.FC = () => {
                     </span>
                   </div>
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleViewDeposit(transaction)}>
                         <Eye className="w-4 h-4 mr-2" />
                         View Details
                       </DropdownMenuItem>
@@ -501,9 +524,13 @@ const DepositLog: React.FC = () => {
                     <p className="text-muted-foreground">Type:</p>
                     <div>{getTypeBadge(transaction.type)}</div>
                   </div>
-                  <div>
+                  <div className="col-span-2">
                     <p className="text-muted-foreground">Date:</p>
-                    <p className="text-foreground">{transaction.date.split(",")[0]}</p>
+                    <p className="text-foreground text-xs break-words">{transaction.date}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-muted-foreground">Wallet:</p>
+                    <p className="text-foreground">{transaction.walletType}</p>
                   </div>
                   <div className="col-span-2">
                     <p className="text-muted-foreground">Remark:</p>
@@ -560,6 +587,9 @@ const DepositLog: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Deposit Sheet */}
+      <DepositSheet deposit={selectedDeposit} isOpen={isSheetOpen} onClose={() => setIsSheetOpen(false)} />
     </div>
   )
 }

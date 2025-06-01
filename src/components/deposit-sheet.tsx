@@ -1,28 +1,15 @@
 "use client"
 
 import type React from "react"
-import {
-  CalendarDays,
-  CreditCard,
-  FileText,
-  MapPin,
-  X,
-  Copy,
-  Check,
-  ArrowDown,
-  ArrowUp,
-  Receipt,
-  Clock,
-} from "lucide-react"
+import { CalendarDays, CreditCard, FileText, MapPin, User,  Copy, Check, Building, Shield } from "lucide-react"
 import { useState } from "react"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "../components/ui/sheet"
 import { Badge } from "../components/ui/badge"
 import { Button } from "../components/ui/button"
 import { Separator } from "../components/ui/separator"
 import { Card, CardContent } from "../components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 
-interface Transaction {
+interface Deposit {
   id: string
   transactionNumber: string
   date: string
@@ -31,18 +18,37 @@ interface Transaction {
   amount: number
   status: "Completed" | "Pending" | "Failed"
   remark: string
+  // Deposit-specific fields
+  paymentMethod?: string
+  bankName?: string
+  accountNumber?: string
+  confirmationCode?: string
+  processingTime?: string
+  fees?: number
 }
 
 interface DepositSheetProps {
-  transaction: Transaction | null
+  deposit: Deposit | null
   isOpen: boolean
   onClose: () => void
 }
 
-const DepositSheet: React.FC<DepositSheetProps> = ({ transaction, isOpen, onClose }) => {
+const DepositSheet: React.FC<DepositSheetProps> = ({ deposit, isOpen, onClose }) => {
   const [copied, setCopied] = useState(false)
 
-  if (!transaction) return null
+  if (!deposit) return null
+
+  // Mock deposit-specific data
+  const depositData = {
+    paymentMethod: "Bank Transfer",
+    bankName: "Chase Bank",
+    accountNumber: "****1234",
+    confirmationCode: "CHB" + deposit.id.padStart(8, "0"),
+    processingTime: "2-3 business days",
+    fees: 0,
+    exchangeRate: 1.0,
+    currency: "USD",
+  }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -50,41 +56,7 @@ const DepositSheet: React.FC<DepositSheetProps> = ({ transaction, isOpen, onClos
     setTimeout(() => setCopied(false), 2000)
   }
 
-  // Generate random processing time (1-5 minutes)
-  const processingTime = Math.floor(Math.random() * 4) + 1
-
-  // Generate random payment method based on remark
-  const getPaymentMethod = () => {
-    if (transaction.remark.includes("Bank")) return "Bank Transfer"
-    if (transaction.remark.includes("ATM")) return "ATM Deposit"
-    if (transaction.remark.includes("Tech")) return "Credit Card"
-    return "E-Wallet"
-  }
-
-  const paymentMethod = getPaymentMethod()
-
-  // Generate random payment details
-  const paymentDetails = {
-    "Bank Transfer": {
-      accountName: "John Smith",
-      accountNumber: "****" + Math.floor(Math.random() * 10000),
-      bankName: "First National Bank",
-    },
-    "ATM Deposit": {
-      cardNumber: "****" + Math.floor(Math.random() * 10000),
-      location: "Main Street Branch",
-    },
-    "Credit Card": {
-      cardNumber: "****" + Math.floor(Math.random() * 10000),
-      cardType: "Visa",
-    },
-    "E-Wallet": {
-      provider: "PayPal",
-      email: "j***@example.com",
-    },
-  }
-
-  const getStatusBadge = (status: Transaction["status"]) => {
+  const getStatusBadge = (status: Deposit["status"]) => {
     switch (status) {
       case "Completed":
         return (
@@ -109,19 +81,14 @@ const DepositSheet: React.FC<DepositSheetProps> = ({ transaction, isOpen, onClos
     }
   }
 
-
-  const getTypeIcon = (type: Transaction["type"]) => {
-    switch (type) {
-      case "Deposit":
-        return <ArrowDown className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-      case "Withdrawal":
-        return <ArrowUp className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-      case "Investment":
-        return <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-      case "Return":
-        return <CreditCard className="w-5 h-5 text-green-600 dark:text-green-400" />
+  const getPaymentMethodIcon = (method: string) => {
+    switch (method) {
+      case "Bank Transfer":
+        return <Building className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+      case "Credit Card":
+        return <CreditCard className="w-5 h-5 text-purple-600 dark:text-purple-400" />
       default:
-        return <FileText className="w-5 h-5 text-muted-foreground" />
+        return <CreditCard className="w-5 h-5 text-blue-600 dark:text-blue-400" />
     }
   }
 
@@ -132,12 +99,9 @@ const DepositSheet: React.FC<DepositSheetProps> = ({ transaction, isOpen, onClos
           <SheetHeader className="space-y-4 flex-shrink-0">
             <div className="flex items-center justify-between">
               <SheetTitle className="text-xl font-semibold text-foreground">Deposit Details</SheetTitle>
-              <Button variant="ghost" size="icon" onClick={onClose}>
-                <X className="w-4 h-4" />
-              </Button>
             </div>
             <SheetDescription className="text-muted-foreground">
-              Complete information about this deposit
+              Complete information about this deposit transaction
             </SheetDescription>
           </SheetHeader>
 
@@ -148,238 +112,188 @@ const DepositSheet: React.FC<DepositSheetProps> = ({ transaction, isOpen, onClos
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center space-x-3">
-                      {getTypeIcon(transaction.type)}
+                      {getPaymentMethodIcon(depositData.paymentMethod)}
                       <div>
-                        <h3 className="font-semibold text-lg text-card-foreground">{transaction.type}</h3>
-                        <p className="text-sm text-muted-foreground">Transaction</p>
+                        <h3 className="font-semibold text-lg text-card-foreground">{depositData.paymentMethod}</h3>
+                        <p className="text-sm text-muted-foreground">Deposit via {depositData.bankName}</p>
                       </div>
                     </div>
-                    {getStatusBadge(transaction.status)}
+                    {getStatusBadge(deposit.status)}
                   </div>
 
                   <div className="text-center py-4">
-                    <p className="text-3xl font-bold text-card-foreground">${transaction.amount.toFixed(2)}</p>
+                    <p className="text-3xl font-bold text-card-foreground">${deposit.amount.toFixed(2)}</p>
                     <p className="text-sm text-muted-foreground mt-1">Deposit Amount</p>
+                    {depositData.fees > 0 && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Processing fee: ${depositData.fees.toFixed(2)}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Security Badge */}
+                  <div className="flex items-center justify-center space-x-2 p-2 bg-green-50 dark:bg-green-950 rounded-lg">
+                    <Shield className="w-4 h-4 text-green-600 dark:text-green-400" />
+                    <span className="text-sm text-green-700 dark:text-green-300 font-medium">Secured Transaction</span>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Tabs for different information sections */}
-              <Tabs defaultValue="details" className="w-full">
-                <TabsList className="grid grid-cols-3 mb-4">
-                  <TabsTrigger value="details">Details</TabsTrigger>
-                  <TabsTrigger value="payment">Payment</TabsTrigger>
-                  <TabsTrigger value="receipt">Receipt</TabsTrigger>
-                </TabsList>
+              {/* Payment Information */}
+              <div className="space-y-4">
+                <h4 className="font-medium text-foreground">Payment Information</h4>
 
-                {/* Details Tab */}
-                <TabsContent value="details" className="space-y-4">
-                  <div className="space-y-4">
-                    {/* Transaction Number */}
-                    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <FileText className="w-4 h-4 text-muted-foreground" />
-                        <div>
-                          <p className="text-sm font-medium text-foreground">Transaction Number</p>
-                          <p className="text-sm text-muted-foreground">{transaction.transactionNumber}</p>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => copyToClipboard(transaction.transactionNumber)}
-                        className="h-8 w-8"
-                      >
-                        {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                      </Button>
-                    </div>
-
-                    {/* Date */}
-                    <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
-                      <CalendarDays className="w-4 h-4 text-muted-foreground" />
+                <div className="space-y-4">
+                  {/* Transaction Number */}
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
                       <div>
-                        <p className="text-sm font-medium text-foreground">Date & Time</p>
-                        <p className="text-sm text-muted-foreground">{transaction.date}</p>
+                        <p className="text-sm font-medium text-foreground">Transaction Number</p>
+                        <p className="text-sm text-muted-foreground">{deposit.transactionNumber}</p>
                       </div>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => copyToClipboard(deposit.transactionNumber)}
+                      className="h-8 w-8"
+                    >
+                      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    </Button>
+                  </div>
 
-                    {/* Processing Time */}
-                    <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
-                      <Clock className="w-4 h-4 text-muted-foreground" />
+                  {/* Confirmation Code */}
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Shield className="w-4 h-4 text-muted-foreground" />
                       <div>
-                        <p className="text-sm font-medium text-foreground">Processing Time</p>
-                        <p className="text-sm text-muted-foreground">
-                          {processingTime} minute{processingTime > 1 ? "s" : ""}
-                        </p>
+                        <p className="text-sm font-medium text-foreground">Confirmation Code</p>
+                        <p className="text-sm text-muted-foreground">{depositData.confirmationCode}</p>
                       </div>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => copyToClipboard(depositData.confirmationCode)}
+                      className="h-8 w-8"
+                    >
+                      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    </Button>
+                  </div>
 
-                    {/* Wallet Type */}
+                  {/* Payment Method & Bank */}
+                  <div className="grid grid-cols-2 gap-3">
                     <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
                       <CreditCard className="w-4 h-4 text-muted-foreground" />
                       <div>
-                        <p className="text-sm font-medium text-foreground">Wallet Type</p>
-                        <p className="text-sm text-muted-foreground">{transaction.walletType}</p>
+                        <p className="text-sm font-medium text-foreground">Payment Method</p>
+                        <p className="text-sm text-muted-foreground">{depositData.paymentMethod}</p>
                       </div>
                     </div>
-
-                    {/* Remark */}
-                    <div className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg">
-                      <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-foreground">Remark</p>
-                        <p className="text-sm text-muted-foreground">{transaction.remark}</p>
+                    <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
+                      <Building className="w-4 h-4 text-muted-foreground" />
+                      <div>
+                        <p className="text-sm font-medium text-foreground">Bank</p>
+                        <p className="text-sm text-muted-foreground">{depositData.bankName}</p>
                       </div>
                     </div>
                   </div>
-                </TabsContent>
 
-                {/* Payment Tab */}
-                <TabsContent value="payment" className="space-y-4">
-                  <Card>
-                    <CardContent className="p-4 space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <CreditCard className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                          <h4 className="font-medium">Payment Method</h4>
-                        </div>
-                        <Badge variant="outline">{paymentMethod}</Badge>
-                      </div>
+                  {/* Account Number */}
+                  <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
+                    <CreditCard className="w-4 h-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Account Number</p>
+                      <p className="text-sm text-muted-foreground">{depositData.accountNumber}</p>
+                    </div>
+                  </div>
 
-                      <Separator />
+                  {/* Date */}
+                  <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
+                    <CalendarDays className="w-4 h-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Transaction Date</p>
+                      <p className="text-sm text-muted-foreground">{deposit.date}</p>
+                    </div>
+                  </div>
 
-                      {/* Payment Details - Dynamic based on payment method */}
-                      <div className="space-y-3">
-                        {paymentMethod === "Bank Transfer" && (
-                          <>
-                            <div className="flex justify-between">
-                              <span className="text-sm text-muted-foreground">Account Name</span>
-                              <span className="text-sm font-medium">{paymentDetails["Bank Transfer"].accountName}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-sm text-muted-foreground">Account Number</span>
-                              <span className="text-sm font-medium">
-                                {paymentDetails["Bank Transfer"].accountNumber}
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-sm text-muted-foreground">Bank Name</span>
-                              <span className="text-sm font-medium">{paymentDetails["Bank Transfer"].bankName}</span>
-                            </div>
-                          </>
-                        )}
+                  {/* Processing Time */}
+                  <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
+                    <CalendarDays className="w-4 h-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Processing Time</p>
+                      <p className="text-sm text-muted-foreground">{depositData.processingTime}</p>
+                    </div>
+                  </div>
 
-                        {paymentMethod === "ATM Deposit" && (
-                          <>
-                            <div className="flex justify-between">
-                              <span className="text-sm text-muted-foreground">Card Number</span>
-                              <span className="text-sm font-medium">{paymentDetails["ATM Deposit"].cardNumber}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-sm text-muted-foreground">Location</span>
-                              <span className="text-sm font-medium">{paymentDetails["ATM Deposit"].location}</span>
-                            </div>
-                          </>
-                        )}
+                  {/* Wallet Type */}
+                  <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
+                    <User className="w-4 h-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Destination Wallet</p>
+                      <p className="text-sm text-muted-foreground">{deposit.walletType}</p>
+                    </div>
+                  </div>
 
-                        {paymentMethod === "Credit Card" && (
-                          <>
-                            <div className="flex justify-between">
-                              <span className="text-sm text-muted-foreground">Card Number</span>
-                              <span className="text-sm font-medium">{paymentDetails["Credit Card"].cardNumber}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-sm text-muted-foreground">Card Type</span>
-                              <span className="text-sm font-medium">{paymentDetails["Credit Card"].cardType}</span>
-                            </div>
-                          </>
-                        )}
+                  {/* Remark */}
+                  <div className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg">
+                    <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-foreground">Transaction Notes</p>
+                      <p className="text-sm text-muted-foreground">{deposit.remark}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                        {paymentMethod === "E-Wallet" && (
-                          <>
-                            <div className="flex justify-between">
-                              <span className="text-sm text-muted-foreground">Provider</span>
-                              <span className="text-sm font-medium">{paymentDetails["E-Wallet"].provider}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-sm text-muted-foreground">Email</span>
-                              <span className="text-sm font-medium">{paymentDetails["E-Wallet"].email}</span>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+              <Separator />
+
+              {/* Transaction Summary */}
+              <div className="space-y-4">
+                <h4 className="font-medium text-foreground">Transaction Summary</h4>
+
+                <div className="space-y-3 p-4 bg-muted/30 rounded-lg">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Deposit Amount:</span>
+                    <span className="font-medium text-foreground">${deposit.amount.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Processing Fee:</span>
+                    <span className="font-medium text-foreground">${depositData.fees.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Exchange Rate:</span>
+                    <span className="font-medium text-foreground">
+                      {depositData.exchangeRate} {depositData.currency}
+                    </span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between text-base font-semibold">
+                    <span className="text-foreground">Total Credited:</span>
+                    <span className="text-foreground">${(deposit.amount - depositData.fees).toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">Reference ID</p>
+                    <p className="text-sm font-medium text-foreground mt-1">DEP{deposit.id.padStart(6, "0")}</p>
+                  </div>
 
                   <div className="p-3 bg-muted/50 rounded-lg">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Receipt className="w-4 h-4 text-muted-foreground" />
-                      <p className="text-sm font-medium text-foreground">Transaction Fee</p>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {transaction.amount > 500 ? "$0.00 (Waived)" : "$2.50"}
-                    </p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">Currency</p>
+                    <p className="text-sm font-medium text-foreground mt-1">{depositData.currency}</p>
                   </div>
-                </TabsContent>
-
-                {/* Receipt Tab */}
-                <TabsContent value="receipt" className="space-y-4">
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="text-center mb-6">
-                        <h3 className="text-lg font-bold mb-1">DEPOSIT RECEIPT</h3>
-                        <p className="text-sm text-muted-foreground">Transaction #{transaction.transactionNumber}</p>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div className="flex justify-between border-b border-border pb-2">
-                          <span className="text-sm text-muted-foreground">Date</span>
-                          <span className="text-sm font-medium">{transaction.date}</span>
-                        </div>
-
-                        <div className="flex justify-between border-b border-border pb-2">
-                          <span className="text-sm text-muted-foreground">Amount</span>
-                          <span className="text-sm font-medium">${transaction.amount.toFixed(2)}</span>
-                        </div>
-
-                        <div className="flex justify-between border-b border-border pb-2">
-                          <span className="text-sm text-muted-foreground">Payment Method</span>
-                          <span className="text-sm font-medium">{paymentMethod}</span>
-                        </div>
-
-                        <div className="flex justify-between border-b border-border pb-2">
-                          <span className="text-sm text-muted-foreground">Status</span>
-                          <span className="text-sm font-medium">{transaction.status}</span>
-                        </div>
-
-                        <div className="flex justify-between border-b border-border pb-2">
-                          <span className="text-sm text-muted-foreground">Wallet</span>
-                          <span className="text-sm font-medium">{transaction.walletType}</span>
-                        </div>
-
-                        <div className="flex justify-between">
-                          <span className="text-sm text-muted-foreground">Reference</span>
-                          <span className="text-sm font-medium">REF{transaction.id.padStart(6, "0")}</span>
-                        </div>
-                      </div>
-
-                      <div className="mt-6 pt-4 border-t border-border text-center">
-                        <p className="text-xs text-muted-foreground">Thank you for your deposit</p>
-                        <p className="text-xs text-muted-foreground">
-                          This receipt was generated on {new Date().toLocaleString()}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
+                </div>
+              </div>
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4">
                 <Button variant="outline" className="flex-1">
                   Download Receipt
                 </Button>
-                <Button className="flex-1">Contact Support</Button>
+                <Button className="flex-1">Make Another Deposit</Button>
               </div>
             </div>
           </div>
