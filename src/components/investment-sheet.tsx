@@ -3,7 +3,7 @@
 import type React from "react"
 import { CalendarDays, TrendingUp, FileText, MapPin, User,  Copy, Check, BarChart3, Target } from "lucide-react"
 import { useState } from "react"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "../components/ui/sheet"
+import { Sheet, SheetContent, SheetDescription, SheetHeader} from "../components/ui/sheet"
 import { Badge } from "../components/ui/badge"
 import { Button } from "..//components/ui/button"
 import { Separator } from "../components/ui/separator"
