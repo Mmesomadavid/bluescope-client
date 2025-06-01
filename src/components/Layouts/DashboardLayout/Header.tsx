@@ -4,7 +4,6 @@ import type React from "react"
 import { Menu, Sun, Moon } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
 import { Popover, PopoverTrigger, PopoverContent } from "../../../components/ui/popover"
-import { Switch } from "../../../components/ui/switch"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 
@@ -14,10 +13,9 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
-  // Ensure component is mounted before rendering theme-dependent content
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -25,6 +23,8 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
   if (!mounted) {
     return null
   }
+
+  const isDark = resolvedTheme === "dark"
 
   return (
     <header className="bg-background border-b border-border px-4 md:px-6 py-3 flex items-center justify-between lg:justify-end transition-colors duration-300">
@@ -42,32 +42,29 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
 
       {/* Right side - Theme toggle and Profile with popover */}
       <div className="flex items-center gap-4">
-        {/* Enhanced Theme Toggle with Animation */}
-        <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/50 transition-all duration-300">
-          <div className="relative">
-            <Sun
-              className={`w-5 h-5 transition-all duration-500 ${
-                theme === "light" ? "text-yellow-500 rotate-0 scale-100" : "text-muted-foreground rotate-180 scale-75"
-              }`}
-            />
-          </div>
-
-          <div className="relative">
-            <Switch
-              checked={theme === "dark"}
-              onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
-              aria-label="Toggle theme"
-              className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-input transition-all duration-300"
-            />
-          </div>
-
-          <div className="relative">
-            <Moon
-              className={`w-5 h-5 transition-all duration-500 ${
-                theme === "dark" ? "text-blue-400 rotate-0 scale-100" : "text-muted-foreground -rotate-180 scale-75"
-              }`}
-            />
-          </div>
+        {/* Theme Toggle Styled as Radio Button */}
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/60 border border-border shadow-inner">
+          <button
+            type="button"
+            aria-label="Switch to light mode"
+            onClick={() => setTheme("light")}
+            className={`flex items-center justify-center w-7 h-7 rounded-full transition-colors
+              ${!isDark ? "bg-white shadow text-yellow-500" : "text-muted-foreground hover:bg-muted"}
+              focus:outline-none focus:ring-2 focus:ring-ring`}
+          >
+            <Sun className="w-4 h-4" />
+          </button>
+          <span className="w-px h-5 bg-border mx-1" />
+          <button
+            type="button"
+            aria-label="Switch to dark mode"
+            onClick={() => setTheme("dark")}
+            className={`flex items-center justify-center w-7 h-7 rounded-full transition-colors
+              ${isDark ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"}
+              focus:outline-none focus:ring-2 focus:ring-ring`}
+          >
+            <Moon className="w-4 h-4" />
+          </button>
         </div>
 
         <Popover>

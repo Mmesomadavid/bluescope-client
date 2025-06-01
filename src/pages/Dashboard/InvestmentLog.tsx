@@ -190,8 +190,8 @@ const InvestmentLog: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">All Investments</h1>
-        <p className="text-gray-600">View and manage all your transaction history.</p>
+        <h1 className="text-2xl font-bold">All Investments</h1>
+        <p >View and manage all your transaction history.</p>
       </div>
 
       <Card>
@@ -235,7 +235,7 @@ const InvestmentLog: React.FC = () => {
             {/* Filter Tabs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Wallet Type</label>
+                <label className="text-sm font-medium  mb-1 block">Wallet Type</label>
                 <Select value={walletTypeFilter} onValueChange={setWalletTypeFilter}>
                   <SelectTrigger>
                     <SelectValue />
@@ -250,7 +250,7 @@ const InvestmentLog: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Type</label>
+                <label className="text-sm font-medium  mb-1 block">Type</label>
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
                   <SelectTrigger>
                     <SelectValue />
@@ -266,7 +266,7 @@ const InvestmentLog: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Remark</label>
+                <label className="text-sm font-medium  mb-1 block">Remark</label>
                 <Select value={remarkFilter} onValueChange={setRemarkFilter}>
                   <SelectTrigger>
                     <SelectValue />
@@ -282,7 +282,7 @@ const InvestmentLog: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Transaction Number</label>
+                <label className="text-sm font-medium  mb-1 block">Transaction Number</label>
                 <Input placeholder="Enter transaction number..." />
               </div>
             </div>
@@ -358,7 +358,7 @@ const InvestmentLog: React.FC = () => {
 
           {/* Pagination */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
-            <div className="text-sm text-gray-700">
+            <div className="text-sm">
               Showing {startIndex + 1} to {Math.min(startIndex + rowsPerPage, filteredInvestments.length)} of{" "}
               {filteredInvestments.length} Investments
             </div>

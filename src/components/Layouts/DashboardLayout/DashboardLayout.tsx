@@ -11,7 +11,7 @@ const DashboardLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   return (
-    <div className="dashboard-layout flex h-screen overflow-hidden bg-gray-50">
+    <div className="dashboard-layout flex h-screen overflow-hidden">
       {/* Sidebar */}
       <Sidebar
         sidebarOpen={sidebarOpen}

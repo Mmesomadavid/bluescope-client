@@ -6,7 +6,7 @@ import { ThemeProvider } from './components/theme-provider.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={true} disableTransitionOnChange={false}>
       <App />
     </ThemeProvider>
   </StrictMode>,
