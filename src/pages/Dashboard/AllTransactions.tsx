@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Search,  MoreHorizontal, Eye, Edit, Trash2, Filter } from "lucide-react"
+import { Search, MoreHorizontal, Eye, Edit, Trash2, Filter } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
@@ -162,11 +162,23 @@ const AllTransactions: React.FC = () => {
   const getStatusBadge = (status: Transaction["status"]) => {
     switch (status) {
       case "Completed":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Completed</Badge>
+        return (
+          <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-900">
+            Completed
+          </Badge>
+        )
       case "Pending":
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pending</Badge>
+        return (
+          <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 hover:bg-yellow-100 dark:hover:bg-yellow-900">
+            Pending
+          </Badge>
+        )
       case "Failed":
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">Failed</Badge>
+        return (
+          <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-900">
+            Failed
+          </Badge>
+        )
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
@@ -175,29 +187,45 @@ const AllTransactions: React.FC = () => {
   const getTypeBadge = (type: Transaction["type"]) => {
     switch (type) {
       case "Deposit":
-        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Deposit</Badge>
+        return (
+          <Badge className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-900">
+            Deposit
+          </Badge>
+        )
       case "Withdrawal":
-        return <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-100">Withdrawal</Badge>
+        return (
+          <Badge className="bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 hover:bg-orange-100 dark:hover:bg-orange-900">
+            Withdrawal
+          </Badge>
+        )
       case "Investment":
-        return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Investment</Badge>
+        return (
+          <Badge className="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 hover:bg-purple-100 dark:hover:bg-purple-900">
+            Investment
+          </Badge>
+        )
       case "Return":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Return</Badge>
+        return (
+          <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-900">
+            Return
+          </Badge>
+        )
       default:
         return <Badge variant="secondary">{type}</Badge>
     }
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-background">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">All Transactions</h1>
-        <p className="text-gray-600">View and manage all your transaction history.</p>
+        <h1 className="text-2xl font-bold text-foreground">All Transactions</h1>
+        <p className="text-muted-foreground">View and manage all your transaction history.</p>
       </div>
 
-      <Card>
+      <Card className="bg-card border-border">
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <CardTitle>Transactions</CardTitle>
+            <CardTitle className="text-card-foreground">Transactions</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -206,17 +234,17 @@ const AllTransactions: React.FC = () => {
             {/* Search and Date Range */}
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
                   placeholder="Search transactions..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 bg-background border-border"
                 />
               </div>
               <div className="flex gap-2">
                 <Select value={rowsPerPage.toString()} onValueChange={(value) => setRowsPerPage(Number(value))}>
-                  <SelectTrigger className="w-32">
+                  <SelectTrigger className="w-32 bg-background border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -235,9 +263,9 @@ const AllTransactions: React.FC = () => {
             {/* Filter Tabs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Wallet Type</label>
+                <label className="text-sm font-medium text-foreground mb-1 block">Wallet Type</label>
                 <Select value={walletTypeFilter} onValueChange={setWalletTypeFilter}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-background border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -250,9 +278,9 @@ const AllTransactions: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Type</label>
+                <label className="text-sm font-medium text-foreground mb-1 block">Type</label>
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-background border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -266,9 +294,9 @@ const AllTransactions: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Remark</label>
+                <label className="text-sm font-medium text-foreground mb-1 block">Remark</label>
                 <Select value={remarkFilter} onValueChange={setRemarkFilter}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-background border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -282,17 +310,17 @@ const AllTransactions: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Transaction Number</label>
-                <Input placeholder="Enter transaction number..." />
+                <label className="text-sm font-medium text-foreground mb-1 block">Transaction Number</label>
+                <Input placeholder="Enter transaction number..." className="bg-background border-border" />
               </div>
             </div>
           </div>
 
           {/* Table */}
-          <div className="border rounded-lg overflow-hidden">
+          <div className="border border-border rounded-lg overflow-hidden">
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="border-border">
                   <TableHead className="w-12">
                     <Checkbox
                       checked={
@@ -301,32 +329,32 @@ const AllTransactions: React.FC = () => {
                       onCheckedChange={handleSelectAll}
                     />
                   </TableHead>
-                  <TableHead>Transaction Number</TableHead>
-                  <TableHead>Date Created</TableHead>
-                  <TableHead>Wallet Type</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Remark</TableHead>
+                  <TableHead className="text-foreground">Transaction Number</TableHead>
+                  <TableHead className="text-foreground">Date Created</TableHead>
+                  <TableHead className="text-foreground">Wallet Type</TableHead>
+                  <TableHead className="text-foreground">Type</TableHead>
+                  <TableHead className="text-foreground">Amount</TableHead>
+                  <TableHead className="text-foreground">Status</TableHead>
+                  <TableHead className="text-foreground">Remark</TableHead>
                   <TableHead className="w-12"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedTransactions.map((transaction) => (
-                  <TableRow key={transaction.id}>
+                  <TableRow key={transaction.id} className="border-border hover:bg-muted/50">
                     <TableCell>
                       <Checkbox
                         checked={selectedTransactions.includes(transaction.id)}
                         onCheckedChange={(checked) => handleSelectTransaction(transaction.id, checked as boolean)}
                       />
                     </TableCell>
-                    <TableCell className="font-medium">{transaction.transactionNumber}</TableCell>
-                    <TableCell>{transaction.date}</TableCell>
-                    <TableCell>{transaction.walletType}</TableCell>
+                    <TableCell className="font-medium text-foreground">{transaction.transactionNumber}</TableCell>
+                    <TableCell className="text-muted-foreground">{transaction.date}</TableCell>
+                    <TableCell className="text-foreground">{transaction.walletType}</TableCell>
                     <TableCell>{getTypeBadge(transaction.type)}</TableCell>
-                    <TableCell className="font-medium">${transaction.amount.toFixed(2)}</TableCell>
+                    <TableCell className="font-medium text-foreground">${transaction.amount.toFixed(2)}</TableCell>
                     <TableCell>{getStatusBadge(transaction.status)}</TableCell>
-                    <TableCell>{transaction.remark}</TableCell>
+                    <TableCell className="text-muted-foreground">{transaction.remark}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -343,7 +371,7 @@ const AllTransactions: React.FC = () => {
                             <Edit className="w-4 h-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem className="text-destructive">
                             <Trash2 className="w-4 h-4 mr-2" />
                             Delete
                           </DropdownMenuItem>
@@ -358,7 +386,7 @@ const AllTransactions: React.FC = () => {
 
           {/* Pagination */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
-            <div className="text-sm text-gray-700">
+            <div className="text-sm text-muted-foreground">
               Showing {startIndex + 1} to {Math.min(startIndex + rowsPerPage, filteredTransactions.length)} of{" "}
               {filteredTransactions.length} transactions
             </div>
