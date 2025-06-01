@@ -1,9 +1,11 @@
 "use client"
 
 import type React from "react"
-import { Menu } from "lucide-react"
+import { Menu, Sun, Moon } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
 import { Popover, PopoverTrigger, PopoverContent } from "../../../components/ui/popover"
+import { Switch } from "../../../components/ui/switch"
+import { useTheme } from "next-themes"
 
 interface HeaderProps {
   setSidebarOpen: (open: boolean) => void
@@ -11,6 +13,8 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
+  const { theme, setTheme } = useTheme()
+
   return (
     <header className="bg-gray-50 px-4 md:px-6 py-3 flex items-center justify-between lg:justify-end">
       {/* Mobile menu button */}
@@ -25,8 +29,19 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
       {/* Page title for mobile */}
       <h1 className="lg:hidden text-lg font-semibold text-gray-900">Dashboard</h1>
 
-      {/* Right side - Profile with popover */}
-      <div className="flex items-center">
+      {/* Right side - Theme toggle and Profile with popover */}
+      <div className="flex items-center gap-4">
+        {/* Theme switch */}
+        <div className="flex items-center gap-2">
+          <Sun className={`w-5 h-5 ${theme === "light" ? "text-yellow-500" : "text-gray-400"}`} />
+          <Switch
+            checked={theme === "dark"}
+            onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+            aria-label="Toggle theme"
+          />
+          <Moon className={`w-5 h-5 ${theme === "dark" ? "text-blue-500" : "text-gray-400"}`} />
+        </div>
+
         <Popover>
           <PopoverTrigger asChild>
             <button className="flex items-center space-x-3 focus:outline-none bg-transparent border-0 p-2 rounded-lg hover:bg-gray-50 transition-colors">

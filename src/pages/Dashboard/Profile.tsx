@@ -107,18 +107,11 @@ const Profile: React.FC = () => {
             <ChevronLeft className="w-4 h-4" />
           </Button>
           <div>
-            <span className="text-sm text-gray-500">Operations engineer</span>
+            <span className="text-4xl font-semibold text-gray-500">Profile</span>
           </div>
         </div>
       </div>
 
-      {/* Main Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Account</h1>
-        <p className="text-gray-600">
-          Your mission critical interface for fleet management, telemetry control, and orbital resource deployment.
-        </p>
-      </div>
 
       {/* Profile Section */}
       <Card>
