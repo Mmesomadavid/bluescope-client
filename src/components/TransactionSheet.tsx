@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { CalendarDays, CreditCard, FileText, MapPin, User,  Copy, Check } from "lucide-react"
+import { CalendarDays, CreditCard, FileText, MapPin, User, Copy, Check } from "lucide-react"
 import { useState } from "react"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "../components/ui/sheet"
 import { Badge } from "../components/ui/badge"
@@ -110,128 +110,132 @@ const TransactionSheet: React.FC<TransactionSheetProps> = ({ transaction, isOpen
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-lg bg-background border-border">
-        <SheetHeader className="space-y-4">
-          <div className="flex items-center justify-between">
-            <SheetTitle className="text-xl font-semibold text-foreground">Transaction Details</SheetTitle>
-          </div>
-          <SheetDescription className="text-muted-foreground">
-            Complete information about this transaction
-          </SheetDescription>
-        </SheetHeader>
+      <SheetContent className="w-full sm:max-w-lg bg-background border-border overflow-y-auto">
+        <div className="h-full flex flex-col">
+          <SheetHeader className="space-y-4 flex-shrink-0">
+            <div className="flex items-center justify-between">
+              <SheetTitle className="text-xl font-semibold text-foreground">Transaction Details</SheetTitle>
+            </div>
+            <SheetDescription className="text-muted-foreground">
+              Complete information about this transaction
+            </SheetDescription>
+          </SheetHeader>
 
-        <div className="mt-6 space-y-6">
-          {/* Transaction Header */}
-          <Card className="bg-card border-border">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  {getTypeIcon(transaction.type)}
-                  <div>
-                    <h3 className="font-semibold text-lg text-card-foreground">{transaction.type}</h3>
-                    <p className="text-sm text-muted-foreground">Transaction</p>
+          <div className="flex-1 overflow-y-auto">
+            <div className="mt-6 space-y-6 pb-6">
+              {/* Transaction Header */}
+              <Card className="bg-card border-border">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      {getTypeIcon(transaction.type)}
+                      <div>
+                        <h3 className="font-semibold text-lg text-card-foreground">{transaction.type}</h3>
+                        <p className="text-sm text-muted-foreground">Transaction</p>
+                      </div>
+                    </div>
+                    {getStatusBadge(transaction.status)}
+                  </div>
+
+                  <div className="text-center py-4">
+                    <p className="text-3xl font-bold text-card-foreground">${transaction.amount.toFixed(2)}</p>
+                    <p className="text-sm text-muted-foreground mt-1">Transaction Amount</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Transaction Information */}
+              <div className="space-y-4">
+                <h4 className="font-medium text-foreground">Transaction Information</h4>
+
+                <div className="space-y-4">
+                  {/* Transaction Number */}
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <div>
+                        <p className="text-sm font-medium text-foreground">Transaction Number</p>
+                        <p className="text-sm text-muted-foreground">{transaction.transactionNumber}</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => copyToClipboard(transaction.transactionNumber)}
+                      className="h-8 w-8"
+                    >
+                      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    </Button>
+                  </div>
+
+                  {/* Date */}
+                  <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
+                    <CalendarDays className="w-4 h-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Date & Time</p>
+                      <p className="text-sm text-muted-foreground">{transaction.date}</p>
+                    </div>
+                  </div>
+
+                  {/* Wallet Type */}
+                  <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
+                    <CreditCard className="w-4 h-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Wallet Type</p>
+                      <p className="text-sm text-muted-foreground">{transaction.walletType}</p>
+                    </div>
+                  </div>
+
+                  {/* Type */}
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <User className="w-4 h-4 text-muted-foreground" />
+                      <div>
+                        <p className="text-sm font-medium text-foreground">Transaction Type</p>
+                        <p className="text-sm text-muted-foreground">{transaction.type}</p>
+                      </div>
+                    </div>
+                    {getTypeBadge(transaction.type)}
+                  </div>
+
+                  {/* Remark */}
+                  <div className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg">
+                    <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-foreground">Remark</p>
+                      <p className="text-sm text-muted-foreground">{transaction.remark}</p>
+                    </div>
                   </div>
                 </div>
-                {getStatusBadge(transaction.status)}
               </div>
 
-              <div className="text-center py-4">
-                <p className="text-3xl font-bold text-card-foreground">${transaction.amount.toFixed(2)}</p>
-                <p className="text-sm text-muted-foreground mt-1">Transaction Amount</p>
-              </div>
-            </CardContent>
-          </Card>
+              <Separator />
 
-          {/* Transaction Information */}
-          <div className="space-y-4">
-            <h4 className="font-medium text-foreground">Transaction Information</h4>
+              {/* Additional Details */}
+              <div className="space-y-4">
+                <h4 className="font-medium text-foreground">Additional Details</h4>
 
-            <div className="space-y-4">
-              {/* Transaction Number */}
-              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <FileText className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Transaction Number</p>
-                    <p className="text-sm text-muted-foreground">{transaction.transactionNumber}</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">Reference ID</p>
+                    <p className="text-sm font-medium text-foreground mt-1">REF{transaction.id.padStart(6, "0")}</p>
+                  </div>
+
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">Processing Fee</p>
+                    <p className="text-sm font-medium text-foreground mt-1">$0.00</p>
                   </div>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => copyToClipboard(transaction.transactionNumber)}
-                  className="h-8 w-8"
-                >
-                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <Button variant="outline" className="flex-1">
+                  Download Receipt
                 </Button>
-              </div>
-
-              {/* Date */}
-              <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
-                <CalendarDays className="w-4 h-4 text-muted-foreground" />
-                <div>
-                  <p className="text-sm font-medium text-foreground">Date & Time</p>
-                  <p className="text-sm text-muted-foreground">{transaction.date}</p>
-                </div>
-              </div>
-
-              {/* Wallet Type */}
-              <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
-                <CreditCard className="w-4 h-4 text-muted-foreground" />
-                <div>
-                  <p className="text-sm font-medium text-foreground">Wallet Type</p>
-                  <p className="text-sm text-muted-foreground">{transaction.walletType}</p>
-                </div>
-              </div>
-
-              {/* Type */}
-              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <User className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Transaction Type</p>
-                    <p className="text-sm text-muted-foreground">{transaction.type}</p>
-                  </div>
-                </div>
-                {getTypeBadge(transaction.type)}
-              </div>
-
-              {/* Remark */}
-              <div className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg">
-                <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground">Remark</p>
-                  <p className="text-sm text-muted-foreground">{transaction.remark}</p>
-                </div>
+                <Button className="flex-1">Contact Support</Button>
               </div>
             </div>
-          </div>
-
-          <Separator />
-
-          {/* Additional Details */}
-          <div className="space-y-4">
-            <h4 className="font-medium text-foreground">Additional Details</h4>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 bg-muted/50 rounded-lg">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">Reference ID</p>
-                <p className="text-sm font-medium text-foreground mt-1">REF{transaction.id.padStart(6, "0")}</p>
-              </div>
-
-              <div className="p-3 bg-muted/50 rounded-lg">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">Processing Fee</p>
-                <p className="text-sm font-medium text-foreground mt-1">$0.00</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-3 pt-4">
-            <Button variant="outline" className="flex-1">
-              Download Receipt
-            </Button>
-            <Button className="flex-1">Contact Support</Button>
           </div>
         </div>
       </SheetContent>
