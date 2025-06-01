@@ -1,18 +1,15 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
-import { ChevronLeft, Edit, MoreHorizontal, Plus, Calendar, Satellite, ChevronDown, User, CreditCard, CalendarDays, LocateIcon as LocationEdit, Camera } from 'lucide-react'
+import React, { useState } from "react"
+import { ChevronLeft, Edit, MoreHorizontal, Plus, Calendar, Satellite, ChevronDown, User, CreditCard, CalendarDays, LocateIcon as LocationEdit } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Button } from "../../components/ui/button"
 import { Badge } from "../../components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../components/ui/dropdown-menu"
 import { Separator } from "../../components/ui/separator"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog"
-import { Label } from "../../components/ui/label"
-import { Input } from "../../components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
+import EditProfileDialog from "../../components/EditProfileDialog"
+
 
 interface Transaction {
   id: string
@@ -31,43 +28,23 @@ interface ProfileDetail {
   icon: React.ComponentType<{ className?: string }>
 }
 
-interface ProfileData {
-  name: string
-  avatar: string
-  status: string
-  myId: string
-  balance: string
-  gender: string
-  age: string
-  dateJoined: string
-  location: string
-}
+
 
 const Profile: React.FC = () => {
   const [isAssignedExpanded, setIsAssignedExpanded] = useState(true)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  
-  const [profileData, setProfileData] = useState<ProfileData>({
+  const [editOpen, setEditOpen] = useState(false)
+  const [profile, setProfile] = useState({
     name: "Victor Tochukwu",
-    avatar: "https://ui-avatars.com/api/?name=Victor+Tochukwu&background=3b82f6&color=fff",
-    status: "Offline",
-    myId: "826ynma8901",
-    balance: "138 Mhz - 240 Mhz",
-    gender: "Male",
-    age: "28",
-    dateJoined: "10 May 2020",
-    location: "Delta"
+    location: "Delta",
   })
 
-  const [editFormData, setEditFormData] = useState<ProfileData>(profileData)
-
   const profileDetails: ProfileDetail[] = [
-    { label: "My ID", value: profileData.myId, icon: User},
-    { label: "Balance", value: profileData.balance, icon: CreditCard },
-    { label: "Gender", value: profileData.gender, icon: User },
-    { label: "Age", value: profileData.age, icon: CalendarDays },
-    { label: "Date Joined", value: profileData.dateJoined, icon: Calendar },
-    { label: "Location", value: profileData.location, icon: LocationEdit },
+    { label: "My ID", value: "826ynma8901", icon: User},
+    { label: "Balance", value: "138 Mhz - 240 Mhz", icon: CreditCard },
+    { label: "Gender", value: "Principal Engineer", icon: User },
+    { label: "Age", value: "Principal Engineer", icon: CalendarDays },
+    { label: "Date Joined", value: "10 May 2020", icon: Calendar },
+    { label: "Location", value: profile.location, icon: LocationEdit },
   ]
 
   const transactions: Transaction[] = [
@@ -103,38 +80,6 @@ const Profile: React.FC = () => {
     },
   ];
 
-  const handleEditProfile = () => {
-    setEditFormData(profileData)
-    setIsEditDialogOpen(true)
-  }
-
-  const handleSaveProfile = () => {
-    setProfileData(editFormData)
-    setIsEditDialogOpen(false)
-  }
-
-  const handleInputChange = (field: keyof ProfileData, value: string) => {
-    setEditFormData(prev => ({
-      ...prev,
-      [field]: value
-    }))
-  }
-
-  const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const result = e.target?.result as string
-        setEditFormData(prev => ({
-          ...prev,
-          avatar: result
-        }))
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
   const getStatusBadge = (status: Transaction["status"]) => {
     switch (status) {
       case "active":
@@ -146,6 +91,10 @@ const Profile: React.FC = () => {
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
+  }
+
+  const handleProfileSave = (updated: { name: string; location: string }) => {
+    setProfile(updated)
   }
 
   return (
@@ -168,143 +117,21 @@ const Profile: React.FC = () => {
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center space-x-4">
               <Avatar className="w-16 h-16">
-                <AvatarImage src={profileData.avatar} />
-                <AvatarFallback className="bg-primary text-primary-foreground text-lg">
-                  {profileData.name.split(' ').map(n => n[0]).join('')}
-                </AvatarFallback>
+                <AvatarImage src="https://ui-avatars.com/api/?name=Mickey+Vazquez&background=3b82f6&color=fff" />
+                <AvatarFallback className="bg-primary text-primary-foreground text-lg">MV</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-2xl font-bold text-card-foreground">{profileData.name}</h2>
+                <h2 className="text-2xl font-bold text-card-foreground">{profile.name}</h2>
                 <div className="flex items-center space-x-2 mt-1">
                   <div className="w-2 h-2 bg-muted-foreground rounded-full"></div>
-                  <span className="text-muted-foreground">{profileData.status}</span>
+                  <span className="text-muted-foreground">Offline</span>
                 </div>
               </div>
             </div>
-            
-            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" onClick={handleEditProfile}>
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Profile
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[500px]">
-                <DialogHeader>
-                  <DialogTitle>Edit Profile</DialogTitle>
-                  <DialogDescription>
-                    Make changes to your profile here. Click save when you're done.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  {/* Profile Picture */}
-                  <div className="flex flex-col items-center space-y-4">
-                    <Avatar className="w-20 h-20">
-                      <AvatarImage src={editFormData.avatar} />
-                      <AvatarFallback className="bg-primary text-primary-foreground text-lg">
-                        {editFormData.name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex space-x-2">
-                      <Label htmlFor="avatar-upload" className="cursor-pointer">
-                        <div className="flex items-center space-x-2 px-3 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md text-sm">
-                          <Camera className="w-4 h-4" />
-                          <span>Change Photo</span>
-                        </div>
-                      </Label>
-                      <Input
-                        id="avatar-upload"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleAvatarUpload}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Name */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input
-                      id="name"
-                      value={editFormData.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                    />
-                  </div>
-
-                  {/* Status */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="status">Status</Label>
-                    <Select value={editFormData.status} onValueChange={(value) => handleInputChange('status', value)}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Online">Online</SelectItem>
-                        <SelectItem value="Offline">Offline</SelectItem>
-                        <SelectItem value="Away">Away</SelectItem>
-                        <SelectItem value="Busy">Busy</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Gender */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="gender">Gender</Label>
-                    <Select value={editFormData.gender} onValueChange={(value) => handleInputChange('gender', value)}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Male">Male</SelectItem>
-                        <SelectItem value="Female">Female</SelectItem>
-                        <SelectItem value="Other">Other</SelectItem>
-                        <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Age */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="age">Age</Label>
-                    <Input
-                      id="age"
-                      type="number"
-                      value={editFormData.age}
-                      onChange={(e) => handleInputChange('age', e.target.value)}
-                    />
-                  </div>
-
-                  {/* Location */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="location">Location</Label>
-                    <Input
-                      id="location"
-                      value={editFormData.location}
-                      onChange={(e) => handleInputChange('location', e.target.value)}
-                    />
-                  </div>
-
-                  {/* Balance */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="balance">Balance</Label>
-                    <Input
-                      id="balance"
-                      value={editFormData.balance}
-                      onChange={(e) => handleInputChange('balance', e.target.value)}
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button type="button" onClick={handleSaveProfile}>
-                    Save Changes
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+            <Button variant="outline" onClick={() => setEditOpen(true)}>
+              <Edit className="w-4 h-4 mr-2" />
+              Edit Profile
+            </Button>
           </div>
 
           {/* Profile Details Grid */}
@@ -435,6 +262,14 @@ const Profile: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit Profile Dialog */}
+      <EditProfileDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        profile={profile}
+        onSave={handleProfileSave}
+      />
     </div>
   )
 }
