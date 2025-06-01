@@ -244,7 +244,7 @@ const AllTransactions: React.FC = () => {
               </div>
               <div className="flex gap-2">
                 <Select value={rowsPerPage.toString()} onValueChange={(value) => setRowsPerPage(Number(value))}>
-                  <SelectTrigger className="w-32 bg-background border-border">
+                  <SelectTrigger className="w-[110px] bg-background border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -254,14 +254,72 @@ const AllTransactions: React.FC = () => {
                     <SelectItem value="50">Show 50</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" className="shrink-0">
                   <Filter className="w-4 h-4" />
                 </Button>
               </div>
             </div>
 
-            {/* Filter Tabs */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Filter Tabs - Collapsible on mobile */}
+            <details className="md:hidden border border-border rounded-lg p-3">
+              <summary className="font-medium text-foreground cursor-pointer">Show Filters</summary>
+              <div className="mt-3 space-y-3">
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-1 block">Wallet Type</label>
+                  <Select value={walletTypeFilter} onValueChange={setWalletTypeFilter}>
+                    <SelectTrigger className="bg-background border-border">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="All">All</SelectItem>
+                      <SelectItem value="Main Wallet">Main Wallet</SelectItem>
+                      <SelectItem value="Investment Wallet">Investment Wallet</SelectItem>
+                      <SelectItem value="Savings Wallet">Savings Wallet</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-1 block">Type</label>
+                  <Select value={typeFilter} onValueChange={setTypeFilter}>
+                    <SelectTrigger className="bg-background border-border">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="All">All</SelectItem>
+                      <SelectItem value="Deposit">Deposit</SelectItem>
+                      <SelectItem value="Withdrawal">Withdrawal</SelectItem>
+                      <SelectItem value="Investment">Investment</SelectItem>
+                      <SelectItem value="Return">Return</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-1 block">Remark</label>
+                  <Select value={remarkFilter} onValueChange={setRemarkFilter}>
+                    <SelectTrigger className="bg-background border-border">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Any">Any</SelectItem>
+                      <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
+                      <SelectItem value="Investment">Investment</SelectItem>
+                      <SelectItem value="Withdrawal">Withdrawal</SelectItem>
+                      <SelectItem value="Return">Return</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-1 block">Transaction Number</label>
+                  <Input placeholder="Enter transaction number..." className="bg-background border-border" />
+                </div>
+              </div>
+            </details>
+
+            {/* Desktop filter grid */}
+            <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <label className="text-sm font-medium text-foreground mb-1 block">Wallet Type</label>
                 <Select value={walletTypeFilter} onValueChange={setWalletTypeFilter}>
@@ -318,70 +376,149 @@ const AllTransactions: React.FC = () => {
 
           {/* Table */}
           <div className="border border-border rounded-lg overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-border">
-                  <TableHead className="w-12">
-                    <Checkbox
-                      checked={
-                        selectedTransactions.length === paginatedTransactions.length && paginatedTransactions.length > 0
-                      }
-                      onCheckedChange={handleSelectAll}
-                    />
-                  </TableHead>
-                  <TableHead className="text-foreground">Transaction Number</TableHead>
-                  <TableHead className="text-foreground">Date Created</TableHead>
-                  <TableHead className="text-foreground">Wallet Type</TableHead>
-                  <TableHead className="text-foreground">Type</TableHead>
-                  <TableHead className="text-foreground">Amount</TableHead>
-                  <TableHead className="text-foreground">Status</TableHead>
-                  <TableHead className="text-foreground">Remark</TableHead>
-                  <TableHead className="w-12"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {paginatedTransactions.map((transaction) => (
-                  <TableRow key={transaction.id} className="border-border hover:bg-muted/50">
-                    <TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-border">
+                    <TableHead className="w-12">
                       <Checkbox
-                        checked={selectedTransactions.includes(transaction.id)}
-                        onCheckedChange={(checked) => handleSelectTransaction(transaction.id, checked as boolean)}
+                        checked={
+                          selectedTransactions.length === paginatedTransactions.length &&
+                          paginatedTransactions.length > 0
+                        }
+                        onCheckedChange={handleSelectAll}
                       />
-                    </TableCell>
-                    <TableCell className="font-medium text-foreground">{transaction.transactionNumber}</TableCell>
-                    <TableCell className="text-muted-foreground">{transaction.date}</TableCell>
-                    <TableCell className="text-foreground">{transaction.walletType}</TableCell>
-                    <TableCell>{getTypeBadge(transaction.type)}</TableCell>
-                    <TableCell className="font-medium text-foreground">${transaction.amount.toFixed(2)}</TableCell>
-                    <TableCell>{getStatusBadge(transaction.status)}</TableCell>
-                    <TableCell className="text-muted-foreground">{transaction.remark}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
-                            <Eye className="w-4 h-4 mr-2" />
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Edit className="w-4 h-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+                    </TableHead>
+                    <TableHead className="text-foreground">Transaction Number</TableHead>
+                    <TableHead className="text-foreground hidden md:table-cell">Date Created</TableHead>
+                    <TableHead className="text-foreground hidden lg:table-cell">Wallet Type</TableHead>
+                    <TableHead className="text-foreground">Type</TableHead>
+                    <TableHead className="text-foreground">Amount</TableHead>
+                    <TableHead className="text-foreground">Status</TableHead>
+                    <TableHead className="text-foreground hidden md:table-cell">Remark</TableHead>
+                    <TableHead className="w-12"></TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {paginatedTransactions.map((transaction) => (
+                    <TableRow key={transaction.id} className="border-border hover:bg-muted/50">
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedTransactions.includes(transaction.id)}
+                          onCheckedChange={(checked) => handleSelectTransaction(transaction.id, checked as boolean)}
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium text-foreground">
+                        <span className="md:hidden">{transaction.transactionNumber.substring(0, 6)}...</span>
+                        <span className="hidden md:inline">{transaction.transactionNumber}</span>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground hidden md:table-cell">{transaction.date}</TableCell>
+                      <TableCell className="text-foreground hidden lg:table-cell">{transaction.walletType}</TableCell>
+                      <TableCell>{getTypeBadge(transaction.type)}</TableCell>
+                      <TableCell className="font-medium text-foreground">${transaction.amount.toFixed(2)}</TableCell>
+                      <TableCell>{getStatusBadge(transaction.status)}</TableCell>
+                      <TableCell className="text-muted-foreground hidden md:table-cell">
+                        <span className="truncate max-w-[150px] block" title={transaction.remark}>
+                          {transaction.remark}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                              <Eye className="w-4 h-4 mr-2" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Edit className="w-4 h-4 mr-2" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive">
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Mobile card view */}
+          <div className="md:hidden mt-4 space-y-4">
+            <h3 className="text-sm font-medium text-muted-foreground mb-2">Mobile View</h3>
+            {paginatedTransactions.map((transaction) => (
+              <div key={transaction.id} className="border border-border rounded-lg p-4 space-y-3 bg-card">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      checked={selectedTransactions.includes(transaction.id)}
+                      onCheckedChange={(checked) => handleSelectTransaction(transaction.id, checked as boolean)}
+                    />
+                    <span
+                      className="font-medium text-foreground truncate max-w-[180px]"
+                      title={transaction.transactionNumber}
+                    >
+                      {transaction.transactionNumber}
+                    </span>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreHorizontal className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        <Eye className="w-4 h-4 mr-2" />
+                        View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-destructive">
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <p className="text-muted-foreground">Amount:</p>
+                    <p className="font-medium text-foreground">${transaction.amount.toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Status:</p>
+                    <div>{getStatusBadge(transaction.status)}</div>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Type:</p>
+                    <div>{getTypeBadge(transaction.type)}</div>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Date:</p>
+                    <p className="text-foreground">{transaction.date.split(",")[0]}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-muted-foreground">Remark:</p>
+                    <p className="text-foreground truncate" title={transaction.remark}>
+                      {transaction.remark}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Pagination */}
