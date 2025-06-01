@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../components/ui/card";
 import { PiggyBank, Clock, ArrowDownCircle, ArrowDownRight, Users, Gift, Copy } from "lucide-react";
+import smileyFace from "../../assets/smiley-face.png"; // Add this import
 
 const Dashboard = () => {
   const handleCopyReferralCode = () => {
@@ -19,8 +20,9 @@ const Dashboard = () => {
     <div className="space-y-6">
       {/* Greeting */}
        <div className="mb-2">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold flex items-center gap-2 text-foreground Poppins">
-           👋 Welcome back John Galt!
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold flex items-center gap-2 text-foreground">
+           Welcome back John Galt!
+           <img src={smileyFace} alt="Smiley face" className="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16" draggable="false" />
           </h2>
           <p className="text-sm text-muted-foreground mt-1">{dateString}</p>
         </div>
