@@ -1,27 +1,23 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
-import { NavLink } from "react-router-dom"
+import React from "react"
+import { NavLink, useNavigate } from "react-router-dom"
 import {
   LayoutDashboard,
   Moon,
   User,
-  CreditCard,
   LogInIcon as Logs,
   PiggyBank,
   ListChecksIcon as ListCheck,
   Target,
+  CreditCard,
   ChevronLeft,
   ChevronRight,
   X,
-  Plus,
   Sun,
 } from "lucide-react"
 import Logo from "../../../components/Logo"
 import { ScrollArea } from "../../../components/ui/scroll-area"
-import DepositDialog from "../../../components/DepositDailog"
-import WithdrawDialog from "../../../components/WithdrawDialog"
 import { useTheme } from "next-themes"
 
 interface SidebarProps {
@@ -45,19 +41,18 @@ const Sidebar: React.FC<SidebarProps> = ({
   sidebarCollapsed,
   setSidebarCollapsed,
 }) => {
-  const [isDepositDialogOpen, setIsDepositDialogOpen] = useState(false)
-  const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false)
   const { setTheme, resolvedTheme } = useTheme()
   const isDark = resolvedTheme === "dark"
+  const navigate = useNavigate()
 
   const menuItems: MenuItem[] = [
     { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
     { icon: Target, label: "Investment Plan", to: "/dashboard/investment-plan" },
     { icon: Logs, label: "Investment Log", to: "/dashboard/investment-log" },
     { icon: ListCheck, label: "All Transactions", to: "/dashboard/all-transactions" },
-    { icon: PiggyBank, label: "Deposit", isButton: true },
+    { icon: PiggyBank, label: "Deposit", to: "/dashboard/deposit", isButton: true },
     { icon: Logs, label: "Deposit Log", to: "/dashboard/deposit-log" },
-    { icon: CreditCard, label: "Withdraw", isButton: true },
+    { icon: CreditCard, label: "Withdraw", to: "/dashboard/withdraw", isButton: true },
     { icon: User, label: "Profile", to: "/dashboard/profile" },
   ]
 
@@ -65,14 +60,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     setSidebarOpen(false)
   }
 
-  const handleDepositClick = () => {
-    setIsDepositDialogOpen(true)
-    setSidebarOpen(false)
-  }
-
-  const handleWithdrawClick = () => {
-    setIsWithdrawDialogOpen(true)
-    setSidebarOpen(false)
+  const handleButtonClick = (item: MenuItem) => {
+    if (item.to) {
+      navigate(item.to)
+      setSidebarOpen(false)
+    }
   }
 
   return (
@@ -132,7 +124,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <div key={index} className="relative">
                   {item.isButton ? (
                     <button
-                      onClick={item.label === "Deposit" ? handleDepositClick : handleWithdrawClick}
+                      onClick={() => handleButtonClick(item)}
                       className={`w-full flex items-center ${
                         sidebarCollapsed ? "lg:justify-center lg:px-2" : "px-3"
                       } py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative text-blue-100 hover:bg-blue-500 hover:text-white`}
@@ -143,25 +135,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                       </div>
                       {!sidebarCollapsed && <span className="truncate ml-3">{item.label}</span>}
 
-                      {!sidebarCollapsed && (
-                        <span className="ml-auto flex bg-white p-1 items-center rounded-full">
-                          {item.label === "Deposit" ? (
-                            <Plus className="w-4 h-4 text-black" />
-                          ) : (
-                            <CreditCard className="w-4 h-4 text-black" />
-                          )}
-                        </span>
-                      )}
+                    
 
-                      {sidebarCollapsed && (
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 rounded-full p-0.5">
-                          {item.label === "Deposit" ? (
-                            <Plus className="w-2 h-2 text-blue-100" />
-                          ) : (
-                            <CreditCard className="w-2 h-2 text-blue-100" />
-                          )}
-                        </div>
-                      )}
 
                       {sidebarCollapsed && (
                         <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 hidden lg:block pointer-events-none">
@@ -248,9 +223,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           {sidebarCollapsed ? <ChevronRight className="w-3 h-3" /> : <ChevronLeft className="w-3 h-3" />}
         </button>
       </aside>
-
-      <DepositDialog isOpen={isDepositDialogOpen} onOpenChange={setIsDepositDialogOpen} />
-      <WithdrawDialog isOpen={isWithdrawDialogOpen} onOpenChange={setIsWithdrawDialogOpen} />
     </>
   )
 }
