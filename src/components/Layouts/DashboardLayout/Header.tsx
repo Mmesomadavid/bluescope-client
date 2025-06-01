@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
   const isDark = resolvedTheme === "dark"
 
   return (
-    <header className="bg-background border-b border-border px-4 md:px-6 py-3 flex items-center justify-between lg:justify-end transition-colors duration-300">
+    <header className="bg-background  px-4 md:px-6 py-3 flex items-center justify-between lg:justify-end transition-colors duration-300">
       {/* Mobile menu button */}
       <button
         onClick={() => setSidebarOpen(true)}
@@ -118,7 +118,7 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
                 <button className="w-full text-left px-2 py-1.5 rounded text-sm text-foreground hover:bg-accent transition-colors">
                   Settings
                 </button>
-                <button className="w-full text-left px-2 py-1.5 rounded text-sm text-destructive hover:bg-destructive/10 transition-colors">
+                <button className="w-full text-left px-2 py-1.5 rounded text-sm text-red-500 hover:bg-destructive/10 transition-colors">
                   Sign Out
                 </button>
               </div>
