@@ -12,10 +12,11 @@ interface DepositDialogProps {
 }
 
 const gateways = [
-  { value: "credit-card", label: "Credit Card" },
-  { value: "bank-transfer", label: "Bank Transfer" },
-  { value: "paypal", label: "PayPal" },
-  { value: "crypto", label: "Cryptocurrency" },
+  { value: "bitcoin", label: "Bitcoin" },
+  { value: "ethereum", label: "Ethereum" },
+  { value: "usdc", label: "USDC" },
+  { value: "usdterc20", label: "USDT ERC20"},
+  { value: "usdt-trc20", label: "USDT-TRC20" },
 ]
 
 const DepositDialog: React.FC<DepositDialogProps> = ({ isOpen, onOpenChange }) => {
