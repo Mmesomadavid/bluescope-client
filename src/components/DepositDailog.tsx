@@ -25,7 +25,7 @@ const DepositDialog: React.FC<DepositDialogProps> = ({ isOpen, onOpenChange }) =
                 Amount
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2">$</span>
                 <input
                   id="amount"
                   type="number"
@@ -54,13 +54,13 @@ const DepositDialog: React.FC<DepositDialogProps> = ({ isOpen, onOpenChange }) =
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Cancel
             </button>
             <button
               type="button"
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium  hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Deposit Now
             </button>
