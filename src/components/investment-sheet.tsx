@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { CalendarDays, TrendingUp, FileText, MapPin, User, X, Copy, Check, BarChart3, Target } from "lucide-react"
+import { CalendarDays, TrendingUp, FileText, MapPin, User,  Copy, Check, BarChart3, Target } from "lucide-react"
 import { useState } from "react"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "../components/ui/sheet"
 import { Badge } from "../components/ui/badge"
@@ -114,10 +114,6 @@ const InvestmentSheet: React.FC<InvestmentSheetProps> = ({ investment, isOpen, o
         <div className="h-full flex flex-col">
           <SheetHeader className="space-y-4 flex-shrink-0">
             <div className="flex items-center justify-between">
-              <SheetTitle className="text-xl font-semibold text-foreground">Investment Details</SheetTitle>
-              <Button variant="ghost" size="icon" onClick={onClose}>
-                <X className="w-4 h-4" />
-              </Button>
             </div>
             <SheetDescription className="text-muted-foreground">
               Complete information about this investment

@@ -162,13 +162,13 @@ const InvestmentLog: React.FC = () => {
     }
   }
 
-  const handleViewInvestment = (transaction: Transaction) => {
-    setSelectedInvestment(transaction)
+  const handleViewInvestment = (investment: Transaction) => {
+    setSelectedInvestment(investment)
     setIsSheetOpen(true)
   }
 
-  const handleRowClick = (transaction: Transaction) => {
-    handleViewInvestment(transaction)
+  const handleRowClick = (investment: Transaction) => {
+    handleViewInvestment(investment)
   }
 
   const getStatusBadge = (status: Transaction["status"]) => {
@@ -401,7 +401,7 @@ const InvestmentLog: React.FC = () => {
                       />
                     </TableHead>
                     <TableHead className="text-foreground">Transaction Number</TableHead>
-                    <TableHead className="text-foreground hidden md:table-cell min-w-[180px]">Date Created</TableHead>
+                    <TableHead className="text-foreground hidden md:table-cell">Date Created</TableHead>
                     <TableHead className="text-foreground hidden lg:table-cell">Wallet Type</TableHead>
                     <TableHead className="text-foreground">Type</TableHead>
                     <TableHead className="text-foreground">Amount</TableHead>
@@ -427,9 +427,7 @@ const InvestmentLog: React.FC = () => {
                         <span className="md:hidden">{transaction.transactionNumber.substring(0, 6)}...</span>
                         <span className="hidden md:inline">{transaction.transactionNumber}</span>
                       </TableCell>
-                      <TableCell className="text-muted-foreground hidden md:table-cell min-w-[180px]">
-                        {transaction.date}
-                      </TableCell>
+                      <TableCell className="text-muted-foreground hidden md:table-cell">{transaction.date}</TableCell>
                       <TableCell className="text-foreground hidden lg:table-cell">{transaction.walletType}</TableCell>
                       <TableCell>{getTypeBadge(transaction.type)}</TableCell>
                       <TableCell className="font-medium text-foreground">${transaction.amount.toFixed(2)}</TableCell>
@@ -528,9 +526,9 @@ const InvestmentLog: React.FC = () => {
                     <p className="text-muted-foreground">Type:</p>
                     <div>{getTypeBadge(transaction.type)}</div>
                   </div>
-                  <div className="col-span-2">
+                  <div>
                     <p className="text-muted-foreground">Date:</p>
-                    <p className="text-foreground text-xs break-words">{transaction.date}</p>
+                    <p className="text-foreground">{transaction.date.split(",")[0]}</p>
                   </div>
                   <div className="col-span-2">
                     <p className="text-muted-foreground">Wallet:</p>
@@ -593,7 +591,7 @@ const InvestmentLog: React.FC = () => {
       </Card>
 
       {/* Investment Sheet */}
-      <InvestmentSheet transaction={selectedInvestment} isOpen={isSheetOpen} onClose={() => setIsSheetOpen(false)} />
+      <InvestmentSheet investment={selectedInvestment} isOpen={isSheetOpen} onClose={() => setIsSheetOpen(false)} />
     </div>
   )
 }
