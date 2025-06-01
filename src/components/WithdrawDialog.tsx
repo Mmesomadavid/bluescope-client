@@ -12,14 +12,14 @@ interface WithdrawDialogProps {
 }
 
 const gateways = [
-  { value: "credit-card", label: "Credit Card" },
-  { value: "bank-transfer", label: "Bank Transfer" },
-  { value: "paypal", label: "PayPal" },
-  { value: "crypto", label: "Cryptocurrency" },
+  { value: "bitcoin", label: "Bitcoin" },
+  { value: "ethereum", label: "Ethereum" },
+  { value: "usdc", label: "USDC" },
+  { value: "usdterc20", label: "USDT ERC20"},
+  { value: "usdt-trc20", label: "USDT-TRC20" },
 ]
 
 const WithdrawDialog: React.FC<WithdrawDialogProps> = ({ isOpen, onOpenChange }) => {
-  const [method, setMethod] = useState("")
   const [gateway, setGateway] = useState("")
   const [amount, setAmount] = useState("")
   const [processing, setProcessing] = useState(false)
@@ -31,7 +31,6 @@ const WithdrawDialog: React.FC<WithdrawDialogProps> = ({ isOpen, onOpenChange })
     setTimeout(() => {
       setProcessing(false)
       onOpenChange(false)
-      setMethod("")
       setGateway("")
       setAmount("")
     }, 2000)
@@ -66,24 +65,6 @@ const WithdrawDialog: React.FC<WithdrawDialogProps> = ({ isOpen, onOpenChange })
                 className="grid gap-4"
                 onSubmit={handleSubmit}
               >
-                <div className="grid gap-2">
-                  <label htmlFor="method" className="text-sm font-medium">
-                    Method
-                  </label>
-                  <select
-                    id="method"
-                    required
-                    value={method}
-                    onChange={e => setMethod(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 py-2 px-3 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  >
-                    <option value="" disabled>
-                      Select Method
-                    </option>
-                    <option value="withdraw">Withdraw</option>
-                    <option value="deposit">Deposit</option>
-                  </select>
-                </div>
                 <div className="grid gap-2">
                   <label htmlFor="gateway" className="text-sm font-medium">
                     Select Gateway
