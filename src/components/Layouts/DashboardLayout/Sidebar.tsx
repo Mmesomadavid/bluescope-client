@@ -16,11 +16,13 @@ import {
   ChevronRight,
   X,
   Plus,
+  Sun,
 } from "lucide-react"
 import Logo from "../../../components/Logo"
 import { ScrollArea } from "../../../components/ui/scroll-area"
 import DepositDialog from "../../../components/DepositDailog"
 import WithdrawDialog from "../../../components/WithdrawDialog"
+import { useTheme } from "next-themes"
 
 interface SidebarProps {
   sidebarOpen: boolean
@@ -37,9 +39,16 @@ interface MenuItem {
   isButton?: boolean
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  sidebarOpen,
+  setSidebarOpen,
+  sidebarCollapsed,
+  setSidebarCollapsed,
+}) => {
   const [isDepositDialogOpen, setIsDepositDialogOpen] = useState(false)
   const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false)
+  const { setTheme, resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
 
   const menuItems: MenuItem[] = [
     { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
@@ -58,19 +67,22 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
 
   const handleDepositClick = () => {
     setIsDepositDialogOpen(true)
-    setSidebarOpen(false) // Close mobile sidebar when deposit is clicked
+    setSidebarOpen(false)
   }
 
   const handleWithdrawClick = () => {
     setIsWithdrawDialogOpen(true)
-    setSidebarOpen(false) // Close mobile sidebar when withdraw is clicked
+    setSidebarOpen(false)
   }
 
   return (
     <>
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div
+          className="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
 
       {/* Sidebar */}
@@ -119,7 +131,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
               {menuItems.map((item, index) => (
                 <div key={index} className="relative">
                   {item.isButton ? (
-                    // Button for deposit and withdraw
                     <button
                       onClick={item.label === "Deposit" ? handleDepositClick : handleWithdrawClick}
                       className={`w-full flex items-center ${
@@ -132,7 +143,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
                       </div>
                       {!sidebarCollapsed && <span className="truncate ml-3">{item.label}</span>}
 
-                      {/* Icon at the extreme right */}
                       {!sidebarCollapsed && (
                         <span className="ml-auto flex bg-white p-1 items-center rounded-full">
                           {item.label === "Deposit" ? (
@@ -143,7 +153,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
                         </span>
                       )}
 
-                      {/* Icon for collapsed state */}
                       {sidebarCollapsed && (
                         <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 rounded-full p-0.5">
                           {item.label === "Deposit" ? (
@@ -154,7 +163,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
                         </div>
                       )}
 
-                      {/* Tooltip for collapsed state */}
                       {sidebarCollapsed && (
                         <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 hidden lg:block pointer-events-none">
                           {item.label}
@@ -162,7 +170,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
                       )}
                     </button>
                   ) : (
-                    // NavLink for other items
                     <NavLink
                       to={item.to!}
                       end={item.to === "/dashboard"}
@@ -181,7 +188,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
                       <item.icon className={`flex-shrink-0 ${sidebarCollapsed ? "w-5 h-5" : "w-4 h-4"}`} />
                       {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
 
-                      {/* Tooltip for collapsed state */}
                       {sidebarCollapsed && (
                         <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 hidden lg:block pointer-events-none">
                           {item.label}
@@ -198,16 +204,30 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
           {!sidebarCollapsed && (
             <div className="border-t border-blue-500 pt-4">
               <div className="flex items-center justify-between px-3 py-2">
-                <span className="text-sm font-medium text-blue-100">Dark Mode</span>
-                <button
-                  type="button"
-                  aria-label="Toggle theme"
-                  className="w-10 h-6 bg-blue-500 rounded-full relative transition-colors hover:bg-blue-400 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-300"
-                >
-                  <span className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full flex items-center justify-center shadow-sm transition-transform">
-                    <Moon className="w-2.5 h-2.5 text-blue-600" />
-                  </span>
-                </button>
+                <span className="text-sm font-medium text-blue-100">Theme</span>
+                <div className="flex items-center gap-2 px-2 py-1 bg-blue-700/40 rounded-full border border-blue-500">
+                  <button
+                    type="button"
+                    aria-label="Switch to light mode"
+                    onClick={() => setTheme("light")}
+                    className={`flex items-center justify-center w-7 h-7 rounded-full transition-colors
+                      ${!isDark ? "bg-white shadow text-yellow-500" : "text-blue-200 hover:bg-blue-600"}
+                      focus:outline-none focus:ring-2 focus:ring-blue-300`}
+                  >
+                    <Sun className="w-4 h-4" />
+                  </button>
+                  <span className="w-px h-5 bg-blue-400 mx-1" />
+                  <button
+                    type="button"
+                    aria-label="Switch to dark mode"
+                    onClick={() => setTheme("dark")}
+                    className={`flex items-center justify-center w-7 h-7 rounded-full transition-colors
+                      ${isDark ? "bg-blue-900 text-blue-100 shadow" : "text-blue-200 hover:bg-blue-600"}
+                      focus:outline-none focus:ring-2 focus:ring-blue-300`}
+                  >
+                    <Moon className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -229,9 +249,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, sidebarC
         </button>
       </aside>
 
-      {/* Pass the dialog state to DepositDialog component */}
       <DepositDialog isOpen={isDepositDialogOpen} onOpenChange={setIsDepositDialogOpen} />
-      {/* Pass the dialog state to WithdrawDialog component */}
       <WithdrawDialog isOpen={isWithdrawDialogOpen} onOpenChange={setIsWithdrawDialogOpen} />
     </>
   )
